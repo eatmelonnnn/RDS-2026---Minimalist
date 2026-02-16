@@ -16,6 +16,7 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> CAN_odrive;
 #define CMD_HEARTBEAT 0x01
 #define CMD_SET_CONTROLLER_GAINS 0x1A
 #define CMD_SET_VEL_INTEGRATOR_GAIN 0x1B
+#define CMD_GET_ENCODER_ESTIMATES 0x09
 
 #define AXIS_STATE_CLOSED_LOOP_CONTROL 8
 #define AXIS_STATE_IDLE 1
@@ -50,14 +51,12 @@ ControlMode command_type = ControlMode::POSITION;
 bool heartbeat_commanded = true;
 
 // ---------------- Sinusoid Parameters ----------------
-// These mean different things depending on mode:
-//
-// POSITION → turns
-// VELOCITY → turns/sec
-// VOLTAGE  → volts
-//
-float amplitude = 0.5f;     // Start small!
+
+float amplitude = 0.5f;     
 float frequency = 0.3f;     // Hz
+
+float encoder_position = 0.0f;
+float encoder_velocity = 0.0f;
 
 // ---------------- Helper Functions ----------------
 void writeAndSendCAN(uint32_t cmd_id, uint8_t *data, uint8_t len) {
@@ -164,29 +163,38 @@ void setup() {
 // ---------------- Loop ----------------
 void loop() {
 
-  // -------- Heartbeat Reading --------
   CAN_message_t msg;
-  if (CAN_odrive.read(msg) && heartbeat_commanded) {
 
-    uint32_t expected_id = (ODRIVE_NODE_ID << 5) | CMD_HEARTBEAT;
+  while (CAN_odrive.read(msg)) {
 
-    if (msg.id == expected_id && msg.len == 8) {
+    uint32_t heartbeat_id = (ODRIVE_NODE_ID << 5) | CMD_HEARTBEAT;
+    uint32_t encoder_id   = (ODRIVE_NODE_ID << 5) | CMD_GET_ENCODER_ESTIMATES;
+
+    if (msg.id == heartbeat_id && msg.len == 8) {
       memcpy(&axis_error, &msg.buf[0], 4);
       axis_state = msg.buf[4];
       procedure_result = msg.buf[5];
       traj_done = msg.buf[6];
     }
+
+    if (msg.id == encoder_id && msg.len == 8) {
+      memcpy(&encoder_position, &msg.buf[0], 4);
+      memcpy(&encoder_velocity, &msg.buf[4], 4);
+    }
   }
 
   // -------- 100 Hz Sinusoid Command --------
   static uint32_t last_send = 0;
+  static uint32_t start_time = millis();
+
   uint32_t now = millis();
 
   if (now - last_send >= 10) {
 
     last_send = now;
 
-    float t = now / 1000.0f;
+    float t = (now - start_time) / 1000.0f;
+
     float sine_value = amplitude *
                        sinf(2.0f * PI * frequency * t);
 
@@ -207,12 +215,16 @@ void loop() {
           break;
 
         case ControlMode::TORQUE:
-          // implement proper torque command if needed
           break;
 
         default:
           break;
       }
     }
+
+    // ---- Serial Plotter Output ----
+    Serial.print(sine_value);
+    Serial.print(",");
+    Serial.println(encoder_position);
   }
 }
