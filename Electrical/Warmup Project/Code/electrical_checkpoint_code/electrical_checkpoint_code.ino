@@ -3,7 +3,7 @@
 #define BUILTIN_LED 13
 
 // ---------------- CAN SETUP ----------------
-FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> CAN_odrive;
+FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> CAN_odrive;
 
 // ---------------- ODRIVE CONFIG ----------------
 #define ODRIVE_NODE_ID 0
@@ -145,7 +145,7 @@ void setup() {
 
     case ControlMode::POSITION:
       setControlMode(static_cast<uint32_t>(ControlMode::POSITION),
-                     static_cast<uint32_t>(InputMode::POS_FILTER));
+                     static_cast<uint32_t>(InputMode::PASSTHROUGH));
       break;
 
     default:
@@ -155,7 +155,7 @@ void setup() {
   delay(20);
 
   if (command_type != ControlMode::NONE) {
-    setControllerGains(20.0f, 0.2f, 40.0f);
+    setControllerGains(1500.0f, 0.2f, 40.0f);
     setODriveAxisState(AXIS_STATE_CLOSED_LOOP_CONTROL);
   }
 }
@@ -195,7 +195,7 @@ void loop() {
 
     float t = (now - start_time) / 1000.0f;
 
-    float sine_value = -amplitude * sinf(2.0f * PI * frequency * t);
+    float sine_value = -0.225* amplitude * sinf(2.0f * PI * frequency * t)-0.2;
 
     if (axis_state == AXIS_STATE_CLOSED_LOOP_CONTROL) {
 
@@ -221,9 +221,15 @@ void loop() {
       }
     }
 
+    float sine_degrees = sine_value * 360.0f;
+    float reference_joint_degrees = 20.0f/11.0f * sine_degrees;
+    float encoder_degrees = encoder_position * 360.0f;
+    float joint_degrees = 20.0f/11.0f * encoder_degrees;
+
     // ---- Serial Plotter Output ----
-    Serial.print(sine_value);
+    Serial.print(reference_joint_degrees);
     Serial.print(",");
-    Serial.println(encoder_position);
+    Serial.println(joint_degrees);
+    Serial.print(",");
   }
 }
