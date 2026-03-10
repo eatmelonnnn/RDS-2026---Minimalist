@@ -1,0 +1,15 @@
+﻿"testbed_height" = 91.50mm
+"plate_thickness" = 4mm
+"main_body_splay_length" = 48.5mm
+"splay_shaft_length_no_wires" = 10mm
+"splay_shaft_length_wires" = 6.5mm
+"timing_pulley_offset" = 0mm
+"effective_motor_length" = "timing_pulley_offset" + "splay_shaft_length_no_wires" + "main_body_splay_length"
+"80_20_side" = 25.4mm
+"80_20_length" = 152.4mm
+"80_20_optic_mount_length" = "80_20_length" - 25.4mm
+"optic_board_hole_size" = 6.35mm
+"total_mounting_length" = "testbed_height" - "effective_motor_length" - "80_20_side"
+"mounting_vertical_portion_height" = "total_mounting_length" - 2 * "plate_thickness"
+"face_mount_width" = 15.25mm
+"center_dist_to_face_mount_vertical_screws" = 5mm
