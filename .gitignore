@@ -1,0 +1,11 @@
+# SolidWorks Temporary and Backup Files
+~$*
+*~
+*.bak
+*.err
+*.swb
+*.tmp
+
+# Optional: Ignore step files if you only want native CAD in the repo
+# *.step
+# *.stps
