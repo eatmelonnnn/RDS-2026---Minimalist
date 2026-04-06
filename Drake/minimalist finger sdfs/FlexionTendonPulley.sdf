@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='FlexionTendonPulley'>
+    <link name='FlexionTendonPulley'>
+      <inertial>
+        <pose>4.769010292233526e-20 -1.4064905623038842e-19 -1.5028657848513165e-20 0 0 0</pose>
+        <mass>0.0005087373716581388</mass>
+        <inertia>
+          <ixx>1.134739347438542e-08</ixx>
+          <ixy>-5.266711822350744e-26</ixy>
+          <ixz>-1.3332336706868138e-25</ixz>
+          <iyy>2.1903679995368106e-08</iyy>
+          <iyz>-2.4621762484526962e-26</iyz>
+          <izz>1.1347393159634971e-08</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/FlexionTendonPulley.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/FlexionTendonPulley.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>
