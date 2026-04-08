@@ -1,0 +1,18 @@
+Open virtual environment:
+-------------------------
+- open ubuntu 22.04
+- got to base directory cd /
+- run: source /drake_env/bin/activate     (exit -> to deactivate)
+
+Convert from obj to sdf:
+-----------------------
+- make sure you are in the virtual environment
+- to get more details run: python3 -m pydrake.multibody.mesh_to_model --help
+- run: python3 -m pydrake.multibody.mesh_to_model path/to/mesh.obj (basic no mass specification)
+- note if scale used is not meters, you have to specify scale
+- variables that can be specified: 
+	- mesh_to_model.py [-h] [--model-name NAME] [--scale FACTOR] [--density KG/M3 | --mass KG] 
+			[--origin-at-com | --body-origin X,Y,Z]
+                        [--package ENCODING] [--output-dir OUTPUT_DIR]
+                        mesh_path
+- Note: I got an error when I used a 0.001 scale for mm so for now just ignore scale

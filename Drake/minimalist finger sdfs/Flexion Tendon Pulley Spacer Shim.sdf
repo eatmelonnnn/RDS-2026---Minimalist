@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='Flexion Tendon Pulley Spacer Shim'>
+    <link name='Flexion Tendon Pulley Spacer Shim'>
+      <inertial>
+        <pose>5.885366273926218e-20 1.1188326510328487e-20 0.00025000000000000136 0 0 0</pose>
+        <mass>6.8627297720199895e-06</mass>
+        <inertia>
+          <ixx>2.3469201301892394e-11</ixx>
+          <ixy>6.640606448247189e-28</ixy>
+          <ixz>5.167038929197683e-29</ixz>
+          <iyy>2.3469180998955384e-11</iyy>
+          <iyz>-2.9723467450244478e-28</iyz>
+          <izz>4.6652435227013624e-11</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>Flexion Tendon Pulley Spacer Shim.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>Flexion Tendon Pulley Spacer Shim.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

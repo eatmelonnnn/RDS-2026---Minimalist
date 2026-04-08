@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='StainlessSteelDowelPin465'>
+    <link name='StainlessSteelDowelPin465'>
+      <inertial>
+        <pose>7.696038779742995e-19 6.397332235661365e-21 5.772029084807246e-21 0 0 0</pose>
+        <mass>0.0003498741755618215</mass>
+        <inertia>
+          <ixx>6.960742824200071e-10</ixx>
+          <ixy>7.740697632481178e-26</ixy>
+          <ixz>2.208810534618833e-26</ixz>
+          <iyy>2.3044694128343594e-08</iyy>
+          <iyz>-2.1693674893577825e-27</iyz>
+          <izz>2.3044693201667603e-08</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/StainlessSteelDowelPin465.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/StainlessSteelDowelPin465.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

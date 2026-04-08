@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='PIP Spacer'>
+    <link name='PIP Spacer'>
+      <inertial>
+        <pose>5.885366273926218e-20 1.1188326510328487e-20 0.002000000000000011 0 0 0</pose>
+        <mass>5.4901838176159916e-05</mass>
+        <inertia>
+          <ixx>2.598122730213471e-10</ixx>
+          <ixy>5.3124851585977514e-27</ixy>
+          <ixz>3.3069049146865174e-27</ixz>
+          <iyy>2.5981211059785114e-10</iyy>
+          <iyz>-1.9023019168156466e-26</iyz>
+          <izz>3.7321948181610904e-10</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>PIP Spacer.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>PIP Spacer.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>
