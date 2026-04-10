@@ -27,3 +27,7 @@ Control signal: y = p_y*(kp*(qd-qc) + kd*(vd-vc)+ ki*integral(qd-qc))
 		qc: controlled position
 		vd: desired velocity
 		vc: controlled velocity
+
+Changes made to assembly:
+--------------------
+The main assembly of the finger is fully represented in the simulation, only spacers and retainers are not included due to their small weight and minimal influence to the system.
