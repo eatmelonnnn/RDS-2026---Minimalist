@@ -16,3 +16,14 @@ Convert from obj to sdf:
                         [--package ENCODING] [--output-dir OUTPUT_DIR]
                         mesh_path
 - Note: I got an error when I used a 0.001 scale for mm so for now just ignore scale
+
+Drake PID Controller:
+--------------------
+2 inputs: desired state, estimated state
+1 output: control signal (fed into the plant)
+
+Control signal: y = p_y*(kp*(qd-qc) + kd*(vd-vc)+ ki*integral(qd-qc))
+		qd: desired position
+		qc: controlled position
+		vd: desired velocity
+		vc: controlled velocity
