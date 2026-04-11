@@ -4,14 +4,14 @@
     <link name='FingertipPhalange'>
       <inertial>
         <pose>-0.025167518270056626 -0.0004706436286612474 -4.9610806149017584e-05 0 0 0</pose>
-        <mass>0.03212715456034665</mass>
+        <mass>0.01206</mass>
         <inertia>
-          <ixx>5.328938922660217e-06</ixx>
-          <ixy>1.540608553437514e-06</ixy>
-          <ixz>3.257383824843567e-08</ixz>
-          <iyy>6.735377252676143e-06</iyy>
-          <iyz>-1.8681991284410164e-08</iyz>
-          <izz>6.90661738360883e-06</izz>
+          <ixx>2.0017e-06</ixx>
+          <ixy>-5.787768e-07</ixy>
+          <ixz>-1.22143e-08</ixz>
+          <iyy>2.5292e-06</iyy>
+          <iyz>7.0003e-9</iyz>
+          <izz>2.595e-06</izz>
         </inertia>
       </inertial>
       <visual name='visual'>

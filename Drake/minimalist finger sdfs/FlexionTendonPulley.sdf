@@ -4,14 +4,14 @@
     <link name='FlexionTendonPulley'>
       <inertial>
         <pose>4.769010292233526e-20 -1.4064905623038842e-19 -1.5028657848513165e-20 0 0 0</pose>
-        <mass>0.0005087373716581388</mass>
+        <mass>0.0006346</mass>
         <inertia>
-          <ixx>1.134739347438542e-08</ixx>
-          <ixy>-5.266711822350744e-26</ixy>
-          <ixz>-1.3332336706868138e-25</ixz>
-          <iyy>2.1903679995368106e-08</iyy>
-          <iyz>-2.4621762484526962e-26</iyz>
-          <izz>1.1347393159634971e-08</izz>
+          <ixx>1.41803e-08</ixx>
+          <ixy>0e-26</ixy>
+          <ixz>-0e-25</ixz>
+          <iyy>2.73737e-08</iyy>
+          <iyz>0e-26</iyz>
+          <izz>1.41803e-08</izz>
         </inertia>
       </inertial>
       <visual name='visual'>

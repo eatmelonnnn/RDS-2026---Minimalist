@@ -4,21 +4,21 @@
     <link name='BearingMCPSpacer'>
       <inertial>
         <pose>-1.21338982768885e-19 0.005392880956745242 4.8535593107554e-19 0 0 0</pose>
-        <mass>0.00028404605074053947</mass>
+        <mass>0.00036</mass>
         <inertia>
-          <ixx>6.3906462160127555e-09</ixx>
-          <ixy>3.9473135235824433e-25</ixy>
-          <ixz>3.2816613657194087e-25</ixz>
-          <iyy>5.023918055842952e-09</iyy>
-          <iyz>-6.431247140863477e-26</iyz>
-          <izz>6.390647093468425e-09</izz>
+          <ixx>8.00e-09</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>6.3e-09</iyy>
+          <iyz>0</iyz>
+          <izz>8.00e-09</izz>
         </inertia>
       </inertial>
       <visual name='visual'>
         <pose>0.0 0.0 0.0 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>BearingMCPSpacer.obj</uri>
+            <uri>/mnt/d/drake_files/minimalist finger objs/BearingMCPSpacer.obj</uri>
             <scale>1.0 1.0 1.0</scale>
           </mesh>
         </geometry>
@@ -27,7 +27,7 @@
         <pose>0.0 0.0 0.0 0 0 0</pose>
         <geometry>
           <mesh>
-            <uri>BearingMCPSpacer.obj</uri>
+            <uri>/mnt/d/drake_files/minimalist finger objs/BearingMCPSpacer.obj</uri>
             <scale>1.0 1.0 1.0</scale>
           </mesh>
         </geometry>
