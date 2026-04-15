@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='MCP Splay Free Spacer'>
+    <link name='MCP Splay Free Spacer'>
+      <inertial>
+        <pose>7.728971815987669e-20 -2.5226505232737527e-19 0.0004999999999999988 0 0 0</pose>
+        <mass>3.135450301198012e-05</mass>
+        <inertia>
+          <ixx>3.976900958505593e-10</ixx>
+          <ixy>1.0896141253365226e-26</ixy>
+          <ixz>-2.239576109922455e-27</ixz>
+          <iyy>3.9768975288562233e-10</iyy>
+          <iyz>3.958438283990277e-27</iyz>
+          <izz>7.901540982341848e-10</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/MCPSplayFreeSpacer.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/MCPSplayFreeSpacer.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

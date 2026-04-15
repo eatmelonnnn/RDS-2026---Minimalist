@@ -4,14 +4,14 @@
     <link name='StainlessSteelDowelPin465'>
       <inertial>
         <pose>7.696038779742995e-19 6.397332235661365e-21 5.772029084807246e-21 0 0 0</pose>
-        <mass>0.0003498741755618215</mass>
+        <mass>2.77e-3</mass>
         <inertia>
-          <ixx>6.960742824200071e-10</ixx>
-          <ixy>7.740697632481178e-26</ixy>
-          <ixz>2.208810534618833e-26</ixz>
-          <iyy>2.3044694128343594e-08</iyy>
-          <iyz>-2.1693674893577825e-27</iyz>
-          <izz>2.3044693201667603e-08</izz>
+          <ixx>5.52e-9</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1.824e-7</iyy>
+          <iyz>0</iyz>
+          <izz>1.824e-7</izz>
         </inertia>
       </inertial>
       <visual name='visual'>

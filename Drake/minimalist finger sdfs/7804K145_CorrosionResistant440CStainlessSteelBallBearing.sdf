@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='7804K145_CorrosionResistant440CStainlessSteelBallBearing'>
+    <link name='7804K145_CorrosionResistant440CStainlessSteelBallBearing'>
+      <inertial>
+        <pose>4.5249191795569686e-20 -7.54749593253399e-19 -0.00043313242801359096 0 0 0</pose>
+        <mass>7.289611742163927e-05</mass>
+        <inertia>
+          <ixx>1.385663304171617e-09</ixx>
+          <ixy>-6.358007380039432e-19</ixy>
+          <ixz>3.4957526098296203e-26</ixz>
+          <iyy>1.3856623539584276e-09</iyy>
+          <iyz>-1.0022432397203613e-25</iyz>
+          <izz>2.6186532571910653e-09</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/7804K145_CorrosionResistant440CStainlessSteelBallBearing.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/7804K145_CorrosionResistant440CStainlessSteelBallBearing.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

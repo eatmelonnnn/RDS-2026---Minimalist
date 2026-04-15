@@ -7,12 +7,12 @@
         <!--<pose>0 0 0 0 0 0</pose>-->
         <mass>0.008085179722617264</mass>
         <inertia>
-          <ixx>7.715910100194802e-07</ixx>
-          <ixy>-4.637883260781575e-09</ixy>
-          <ixz>-1.953608351337496e-09</ixz>
-          <iyy>1.0971450407259318e-06</iyy>
-          <iyz>-5.052101064925062e-08</iyz>
-          <izz>7.126257048701437e-07</izz>
+          <ixx>5.7686e-07</ixx>
+          <ixy>3.47e-9</ixy>
+          <ixz>1.46e-9</ixz>
+          <iyy>8.1999e-07</iyy>
+          <iyz>3.780e-08</iyz>
+          <izz>5.3236e-07</izz>
         </inertia>
       </inertial>
       <visual name='visual'>

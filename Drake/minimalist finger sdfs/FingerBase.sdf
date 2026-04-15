@@ -4,14 +4,14 @@
     <link name='FingerBase'>
       <inertial>
         <pose>0.010662634987221167 0.01599999999986344 -1.7067669956457557e-10 0 0 0</pose>
-        <mass>0.008131742532544409</mass>
+        <mass>0.00607</mass>
         <inertia>
-          <ixx>1.7982951830506384e-06</ixx>
-          <ixy>8.492662074055237e-16</ixy>
-          <ixz>7.4983065810155e-15</ixz>
-          <iyy>1.1023003703809995e-06</iyy>
-          <iyz>1.2120036534515412e-08</iyz>
-          <izz>1.452935007055638e-06</izz>
+          <ixx>1.34255e-06</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>8.2323e-07</iyy>
+          <iyz>-9.05e-10</iyz>
+          <izz>1.08469e-06</izz>
         </inertia>
       </inertial>
       <visual name='visual'>

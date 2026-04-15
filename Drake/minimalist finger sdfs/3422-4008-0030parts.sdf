@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='3422-4008-0030parts'>
+    <link name='3422-4008-0030parts'>
+      <inertial>
+        <pose>-1.6527985885679078e-13 1.3237741983326737e-07 0.008310706786246048 0 0 0</pose>
+        <mass>0.000264652111262662</mass>
+        <inertia>
+          <ixx>9.436850392983223e-09</ixx>
+          <ixy>-1.8448829959930856e-17</ixy>
+          <ixz>-3.529494907862762e-20</ixz>
+          <iyy>9.18744154562482e-09</iyy>
+          <iyz>2.773786455344496e-14</iyz>
+          <izz>1.8504790739982516e-08</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/3422-4008-0030parts.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/3422-4008-0030parts.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>

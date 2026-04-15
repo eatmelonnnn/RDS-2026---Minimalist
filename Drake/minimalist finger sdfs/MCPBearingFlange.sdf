@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<sdf xmlns:drake="http://drake.mit.edu" version="1.8">
+  <model name='MCPBearingFlange'>
+    <link name='MCPBearingFlange'>
+      <inertial>
+        <pose>-3.7332783542808103e-19 0.0004999999999999966 -4.961801263197498e-19 0 0 0</pose>
+        <mass>5.6438194186680344e-05</mass>
+        <inertia>
+          <ixx>2.2930264866186513e-09</ixx>
+          <ixy>1.7666802926059704e-26</ixy>
+          <ixz>8.67746995743114e-27</ixz>
+          <iyy>4.5766427275548905e-09</iyy>
+          <iyz>-1.6368337876065755e-26</iyz>
+          <izz>2.2930226066340183e-09</izz>
+        </inertia>
+      </inertial>
+      <visual name='visual'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/MCPBearingFlange.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name='collision'>
+        <pose>0.0 0.0 0.0 0 0 0</pose>
+        <geometry>
+          <mesh>
+            <uri>/mnt/d/drake_files/minimalist finger objs/MCPBearingFlange.obj</uri>
+            <scale>1.0 1.0 1.0</scale>
+          </mesh>
+        </geometry>
+        <!-- The proximity properties immediately below enable the hydroelastic
+             contact model for this body. To use point contact instead, delete
+             or comment out the <drake:rigid_hydroelastic> element. -->
+        <drake:proximity_properties>
+          <drake:mu_dynamic>0.5</drake:mu_dynamic>
+          <drake:mu_static>0.5</drake:mu_static>
+          <drake:rigid_hydroelastic/>
+        </drake:proximity_properties>
+      </collision>
+    </link>
+  </model>
+</sdf>
