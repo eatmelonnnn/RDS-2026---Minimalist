@@ -220,6 +220,11 @@ void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8);
 }
 
+void get_encoder_values(motor_axis *axis) {
+  uint8_t enc_bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC};
+  comm_can_transmit_sid(axis->controller_id, enc_bytes, 8);
+}
+
 
 float position;
 float speed ;
@@ -278,7 +283,7 @@ motor_axis motor3;
 
 float t0 = 0;
 
-float raw_calibrate_motor(motor_axis *axis, float velocity) {
+float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
     CAN_message_t rxMsg;
 
     float pos_initial = 0;
@@ -287,11 +292,18 @@ float raw_calibrate_motor(motor_axis *axis, float velocity) {
     float calibration_offsets[3];
     float current_threshold = 1.7f;
 
-    uint32_t motor_id = axis->controller_id;
 
     // ===== 1. Get initial position =====
+    Serial.println("Getting initial position");
     while (!initialized) {
+        get_encoder_values(axis);
         if (can3.read(rxMsg)) {
+            Serial.println("Message Read");
+            Serial.print("CAN ID: ");
+            Serial.print(rxMsg.id);
+            Serial.print(" | DATA ID: ");
+            Serial.println(rxMsg.buf[0]);
+            
             if (rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
 
@@ -316,7 +328,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity) {
 
         bool done = false;
         uint32_t start_time = millis();
-        uint32_t timeout_ms = 5000;
+        uint32_t timeout_ms = 15000;
 
         while (!done) {
 
@@ -333,6 +345,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity) {
                 unpack_reply(&rxMsg, motor_id);
 
                 float current = torque;
+                Serial.println(current);
 
                 if (abs(current) > current_threshold) {
                     Serial.println("HARD STOP");
@@ -361,9 +374,9 @@ float raw_calibrate_motor(motor_axis *axis, float velocity) {
 
 
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3) {
-  calibration_offsets[0] = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY);
-  calibration_offsets[1] = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY);
-  calibration_offsets[2] = raw_calibrate_motor(motor3, CALIBRATION_VELOCITY);
+  calibration_offsets[0] = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY, MOTOR1_ID);
+  calibration_offsets[1] = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID);
+  calibration_offsets[2] = raw_calibrate_motor(motor3, CALIBRATION_VELOCITY, MOTOR3_ID);
   
   
 }
@@ -389,8 +402,11 @@ void setup() {
   Serial.println("Entered MIT mode");
   // set_position(&motor1, 2.5f, 8.0f, 0.5f);
   // set_position(&motor2, 2.5f, 8.0f, 0.5f);
-  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
+  //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
   delay(100);
+  Serial.println("Starting Calibration");
+  float calibration_hardstops[3];
+  full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
   t0 = millis() / 1000.0f; 
 
 }
@@ -406,8 +422,10 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
 float pos1 = 0, pos2 = 0, pos3 = 0;
 float target1 = 0, target2 = 0, target3 = 0;
 
-void loop() {  
-  /*
+
+void loop() {
+  
+  
   static uint32_t lastCmd = 0;
   if (millis() - lastCmd >= 10) {
       target1 = generate_sine_wave(&motor1, 0.5f, 1.5f);
@@ -415,7 +433,7 @@ void loop() {
       target3 = generate_sine_wave(&motor3, 0.5f, 2.5f);
       lastCmd = millis();
   }
-  */
+  
 
   CAN_message_t rxMsg;
   while (can3.read(rxMsg)) {
@@ -425,7 +443,7 @@ void loop() {
       if (incoming_id == MOTOR1_ID){
         unpack_reply(&rxMsg, MOTOR1_ID); 
         pos1 = position;
-        // print_data(rxMsg, MOTOR1_ID);
+        print_data(rxMsg, MOTOR1_ID);
       }
       else if (incoming_id == MOTOR2_ID){
         unpack_reply(&rxMsg, MOTOR2_ID); 
@@ -435,7 +453,7 @@ void loop() {
       else if (incoming_id == MOTOR3_ID){
         unpack_reply(&rxMsg, MOTOR3_ID); 
         pos3 = position;
-        // print_data(rxMsg, MOTOR3_ID);
+        print_data(rxMsg, MOTOR3_ID);
       }     
 
       // Serial.println();
