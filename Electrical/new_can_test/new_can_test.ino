@@ -28,7 +28,7 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define HARDSTOP_MOTOR_2 1.57079633f
 #define HARDSTOP_MOTOR_3 1.57079633f
 
-#define CALIBRATION_VELOCITY 0.5f
+#define CALIBRATION_VELOCITY -0.5f
 
 struct tendonLengths {
     float l1;
@@ -190,9 +190,17 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8);
 }
 
-void set_joint_position(motor_axis *axis, angles pos_rad, float kp, float kd) {
-  return;
+// Converts joint-space angles to motor positions and commands all three motors.
+// calibration_offsets must be the array populated by full_calibration().
+void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
+                        angles joint_pos, float calibration_offsets[3],
+                        float kp, float kd) {
+    angles motor_pos = joint_pos_to_motor_pos(joint_pos, calibration_offsets);
+    set_position(m1, motor_pos.th1, kp, kd);
+    set_position(m2, motor_pos.th2, kp, kd);
+    set_position(m3, motor_pos.th3, kp, kd);
 }
+
 
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     // Clamp inputs
@@ -282,6 +290,8 @@ motor_axis motor2;
 motor_axis motor3;
 
 float t0 = 0;
+
+void fake_calibration(motor_ax)
 
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
     CAN_message_t rxMsg;
@@ -381,6 +391,13 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
   
 }
 
+// angles generate_joint_test(float t) {
+//     angles j = {0.0f, 0.0f, 0.0f};
+//     if      (t < 10.0f) j.th1 = 0.4f * sin(1.5f * t);
+//     else if (t < 20.0f) j.th2 = 0.4f * sin(1.5f * t);
+//     else                j.th3 = 0.4f * sin(1.5f * t);
+//     return j;
+// }
 
 void setup() {
   // put your setup code here, to run once:
@@ -418,6 +435,8 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
 
   return target_position;
 }
+
+
 
 float pos1 = 0, pos2 = 0, pos3 = 0;
 float target1 = 0, target2 = 0, target3 = 0;
@@ -470,5 +489,41 @@ void loop() {
 }
 
 
+
+// void loop() {
+//     float t = (millis() / 1000.0f) - t0;
+
+//     static uint32_t lastCmd = 0;
+//     if (millis() - lastCmd >= 10) {
+//         target_joint = generate_joint_test(t);
+
+//         // Print the joint target and the resulting motor commands for verification
+//         angles motor_targets = joint_pos_to_motor_pos(target_joint, calibration_hardstops);
+//         Serial.print("t:"); Serial.print(t, 2);
+//         Serial.print("\tJ1:"); Serial.print(target_joint.th1, 3);
+//         Serial.print("\tJ2:"); Serial.print(target_joint.th2, 3);
+//         Serial.print("\tJ3:"); Serial.print(target_joint.th3, 3);
+//         Serial.print("\tM1:"); Serial.print(motor_targets.th1, 3);
+//         Serial.print("\tM2:"); Serial.print(motor_targets.th2, 3);
+//         Serial.print("\tM3:"); Serial.print(motor_targets.th3, 3);
+
+//         set_joint_position(&motor1, &motor2, &motor3,
+//                            target_joint, calibration_hardstops,
+//                            10.0f, 0.5f);
+//         lastCmd = millis();
+//     }
+
+//     CAN_message_t rxMsg;
+//     while (can3.read(rxMsg)) {
+//         if (rxMsg.id == MOTOR1_ID) { unpack_reply(&rxMsg, MOTOR1_ID); pos1 = position; }
+//         else if (rxMsg.id == MOTOR2_ID) { unpack_reply(&rxMsg, MOTOR2_ID); pos2 = position; }
+//         else if (rxMsg.id == MOTOR3_ID) { unpack_reply(&rxMsg, MOTOR3_ID); pos3 = position; }
+//     }
+
+//     // Actual motor positions for serial plotter
+//     Serial.print("\tA1:"); Serial.print(pos1, 3);
+//     Serial.print("\tA2:"); Serial.print(pos2, 3);
+//     Serial.print("\tA3:"); Serial.println(pos3, 3);
+// }
 
 
