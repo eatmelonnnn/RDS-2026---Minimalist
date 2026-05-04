@@ -41,6 +41,21 @@ struct angles {
     float th3;
 };
 
+
+struct motor_axis {
+    uint8_t packet[8];
+    float serial_pos;
+    float motor_vel;
+    int motor_dir;
+    uint16_t controller_id;
+    int16_t motor_pos;
+    int16_t motor_spd;
+    int16_t motor_cur;
+    int8_t motor_temp;
+    int8_t motor_error;
+};
+
+tendonLengths multiply_AT(float th1, float th2, float th3);
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
 
 
@@ -71,18 +86,6 @@ angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]) {
     return m;
 }
 
-struct motor_axis {
-    uint8_t packet[8];
-    float serial_pos;
-    float motor_vel;
-    int motor_dir;
-    uint16_t controller_id;
-    int16_t motor_pos;
-    int16_t motor_spd;
-    int16_t motor_cur;
-    int8_t motor_temp;
-    int8_t motor_error;
-};
 
 float float_to_uint(float x, float x_min, float x_max, int bits) {
     float span = x_max - x_min;
