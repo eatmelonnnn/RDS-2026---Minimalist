@@ -28,7 +28,7 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define HARDSTOP_MOTOR_2 1.57079633f
 #define HARDSTOP_MOTOR_3 1.57079633f
 
-#define CALIBRATION_VELOCITY 0.5f
+#define CALIBRATION_VELOCITY -0.5f
 
 struct tendonLengths {
     float l1;
@@ -55,6 +55,12 @@ struct motor_axis {
     int8_t motor_error;
 };
 
+angles poseA = {0.0f, 0.0f, 0.0f};
+angles poseB = {0.0f, 0.6f, 0.6f};
+float pos1_unwrapped = 0;
+float pos2_unwrapped = 0;
+float pos3_unwrapped = 0;
+
 tendonLengths multiply_AT(float th1, float th2, float th3);
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
 
@@ -72,16 +78,16 @@ tendonLengths multiply_AT(float th1, float th2, float th3) {
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]) {
   angles m;
 
-    float joint_angle_diff_1 = HARDSTOP_MOTOR_1 - jointpos.th1;
-    float joint_angle_diff_2 = HARDSTOP_MOTOR_2 - jointpos.th2;
-    float joint_angle_diff_3 = HARDSTOP_MOTOR_3 - jointpos.th3;
+    float joint_angle_diff_1 = - HARDSTOP_MOTOR_1 + jointpos.th1;
+    float joint_angle_diff_2 = - HARDSTOP_MOTOR_2 + jointpos.th2;
+    float joint_angle_diff_3 = - HARDSTOP_MOTOR_3 + jointpos.th3;
 
     tendonLengths tendon_diff =
         multiply_AT(joint_angle_diff_1, joint_angle_diff_2, joint_angle_diff_3);
 
-    m.th2 = calibration_offsets[1] - tendon_diff.l1 / Rm2;
-    m.th3 = calibration_offsets[2] - tendon_diff.l2 / Rm3;
-    m.th1 = calibration_offsets[0] - (HARDSTOP_MOTOR_3 - jointpos.th3) * rs / Rm3;
+    m.th2 = calibration_offsets[1] + tendon_diff.l1 / Rm2;
+    m.th3 = calibration_offsets[2] + tendon_diff.l2 / Rm3;
+    m.th1 = calibration_offsets[0] + joint_angle_diff_1 * rs / Rm3;
 
     return m;
 }
@@ -107,6 +113,18 @@ void comm_can_transmit_sid(uint32_t id, const uint8_t *data, uint8_t len){
   }
 
   can3.write(msg);
+}
+
+float unwrap_angle(float current) {
+
+    if (current > 2*PI) {
+        current -= 2.0f * PI;
+    } 
+    else if (current < -2*PI) {
+        current += 2.0f * PI;
+    }
+
+    return current;
 }
 
 void enter_MIT_control_mode(){
@@ -190,9 +208,17 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8);
 }
 
-void set_joint_position(motor_axis *axis, angles pos_rad, float kp, float kd) {
-  return;
+// Converts joint-space angles to motor positions and commands all three motors.
+// calibration_offsets must be the array populated by full_calibration().
+void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
+                        angles joint_pos, float calibration_offsets[3],
+                        float kp, float kd) {
+    angles motor_pos = joint_pos_to_motor_pos(joint_pos, calibration_offsets);
+    set_position(m1, motor_pos.th1, kp, kd);
+    set_position(m2, motor_pos.th2, kp, kd);
+    set_position(m3, motor_pos.th3, kp, kd);
 }
+
 
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     // Clamp inputs
@@ -282,6 +308,64 @@ motor_axis motor2;
 motor_axis motor3;
 
 float t0 = 0;
+
+void fake_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3) {
+  bool initialized = false;
+  CAN_message_t rxMsg;
+  while (!initialized) {
+        Serial.println("Motor1");
+        get_encoder_values(motor1);
+        if (can3.read(rxMsg)) {
+          
+            uint32_t motor_id = motor1 ->controller_id;
+            if (rxMsg.id == motor_id) {
+                unpack_reply(&rxMsg, motor_id);
+
+                if (!isnan(position)) {
+
+                    initialized = true;
+                    calibration_offsets[0] = position;
+                }
+            }
+        }
+    }
+    initialized = false;
+    while (!initialized) {
+        Serial.println("Motor2");
+        get_encoder_values(motor2);
+        if (can3.read(rxMsg)) {
+          
+            uint32_t motor_id = motor2 ->controller_id;
+            if (rxMsg.id == motor_id) {
+                unpack_reply(&rxMsg, motor_id);
+
+                if (!isnan(position)) {
+
+                    initialized = true;
+                    calibration_offsets[1] = position;
+                }
+            }
+        }
+    }
+    initialized = false;
+    while (!initialized) {
+        Serial.println("Motor3");
+        get_encoder_values(motor3);
+        if (can3.read(rxMsg)) {
+          
+            uint32_t motor_id = motor3 ->controller_id;
+            if (rxMsg.id == motor_id) {
+                unpack_reply(&rxMsg, motor_id);
+
+                if (!isnan(position)) {
+
+                    initialized = true;
+                    calibration_offsets[2] = position;
+                }
+            }
+        }
+    }
+}
 
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
     CAN_message_t rxMsg;
@@ -381,6 +465,15 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
   
 }
 
+// angles generate_joint_test(float t) {
+//     angles j = {0.0f, 0.0f, 0.0f};
+//     if      (t < 10.0f) j.th1 = 0.4f * sin(1.5f * t);
+//     else if (t < 20.0f) j.th2 = 0.4f * sin(1.5f * t);
+//     else                j.th3 = 0.4f * sin(1.5f * t);
+//     return j;
+// }
+
+float calibration_hardstops[3];
 
 void setup() {
   // put your setup code here, to run once:
@@ -405,10 +498,16 @@ void setup() {
   //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
   delay(100);
   Serial.println("Starting Calibration");
-  float calibration_hardstops[3];
-  full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
+  
+  fake_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
+  Serial.print("Calibration offsets: ");
+  for (int i = 0; i < 3; i++) {
+    Serial.print(calibration_hardstops[i]);
+  }
+  delay(10000);
+  Serial.println("");
   t0 = millis() / 1000.0f; 
-
+  
 }
 
 float generate_sine_wave(motor_axis *axis, float amplitude, float angular_frequency){
@@ -419,13 +518,41 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
   return target_position;
 }
 
+angles generate_step_response(angles a, angles b, float freq) {
+    uint32_t period_ms = (uint32_t)(1000.0f / freq);
+    uint32_t t = millis() % period_ms;
+
+    if (t < period_ms / 2) {
+        return a;
+    } else {
+        return b;
+    }
+}
+
 float pos1 = 0, pos2 = 0, pos3 = 0;
 float target1 = 0, target2 = 0, target3 = 0;
 
 
 void loop() {
   
-  
+//   static uint32_t lastCmd = 0;
+// if (millis() - lastCmd >= 10) {  
+
+//     angles target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
+
+//     // Send to motors
+//     set_joint_position(&motor1, &motor2, &motor3,
+//                        target_joint,
+//                        calibration_hardstops,
+//                        8.0f, 2.0f);
+
+    
+//     target1 = unwrap_angle(target_joint.th1);
+//     target2 = unwrap_angle(target_joint.th2);
+//     target3 = unwrap_angle(target_joint.th3);
+
+//     lastCmd = millis();
+// }
   static uint32_t lastCmd = 0;
   if (millis() - lastCmd >= 10) {
       target1 = generate_sine_wave(&motor1, 0.5f, 1.5f);
@@ -442,33 +569,76 @@ void loop() {
 
       if (incoming_id == MOTOR1_ID){
         unpack_reply(&rxMsg, MOTOR1_ID); 
-        pos1 = position;
-        print_data(rxMsg, MOTOR1_ID);
+        pos1 = unwrap_angle(position);
+        // print_data(rxMsg, MOTOR1_ID);
       }
       else if (incoming_id == MOTOR2_ID){
         unpack_reply(&rxMsg, MOTOR2_ID); 
-        pos2 = position;
+        pos2 = unwrap_angle(position);
         // print_data(rxMsg, MOTOR2_ID);
       }
       else if (incoming_id == MOTOR3_ID){
         unpack_reply(&rxMsg, MOTOR3_ID); 
-        pos3 = position;
-        print_data(rxMsg, MOTOR3_ID);
+        pos3 = unwrap_angle(position);
+        // print_data(rxMsg, MOTOR3_ID);
       }     
 
       // Serial.println();
   }
-  // for serial plotter and monitor
-  Serial.print("T1:"); Serial.print(target1);
-  Serial.print("\tA1:"); Serial.print(pos1);
-  Serial.print("\tT2:"); Serial.print(target2);
-  Serial.print("\tA2:"); Serial.print(pos2);
-  Serial.print("\tT3:"); Serial.print(target3);
-  Serial.print("\tA3:"); Serial.println(pos3);
 
+static uint32_t lastPrint = 0;
+if (millis() - lastPrint >= 100) {
+
+    Serial.print(target1); Serial.print("\t");
+    Serial.print(pos1); Serial.print("\t");
+
+    Serial.print(target2); Serial.print("\t");
+    Serial.print(pos2); Serial.print("\t");
+
+    Serial.print(target3); Serial.print("\t");
+    Serial.println(pos3);
+
+    lastPrint = millis();
+}
   // delay(100);
 }
 
 
+
+// void loop() {
+//     float t = (millis() / 1000.0f) - t0;
+
+//     static uint32_t lastCmd = 0;
+//     if (millis() - lastCmd >= 10) {
+//         target_joint = generate_joint_test(t);
+
+//         // Print the joint target and the resulting motor commands for verification
+//         angles motor_targets = joint_pos_to_motor_pos(target_joint, calibration_hardstops);
+//         Serial.print("t:"); Serial.print(t, 2);
+//         Serial.print("\tJ1:"); Serial.print(target_joint.th1, 3);
+//         Serial.print("\tJ2:"); Serial.print(target_joint.th2, 3);
+//         Serial.print("\tJ3:"); Serial.print(target_joint.th3, 3);
+//         Serial.print("\tM1:"); Serial.print(motor_targets.th1, 3);
+//         Serial.print("\tM2:"); Serial.print(motor_targets.th2, 3);
+//         Serial.print("\tM3:"); Serial.print(motor_targets.th3, 3);
+
+//         set_joint_position(&motor1, &motor2, &motor3,
+//                            target_joint, calibration_hardstops,
+//                            10.0f, 0.5f);
+//         lastCmd = millis();
+//     }
+
+//     CAN_message_t rxMsg;
+//     while (can3.read(rxMsg)) {
+//         if (rxMsg.id == MOTOR1_ID) { unpack_reply(&rxMsg, MOTOR1_ID); pos1 = position; }
+//         else if (rxMsg.id == MOTOR2_ID) { unpack_reply(&rxMsg, MOTOR2_ID); pos2 = position; }
+//         else if (rxMsg.id == MOTOR3_ID) { unpack_reply(&rxMsg, MOTOR3_ID); pos3 = position; }
+//     }
+
+//     // Actual motor positions for serial plotter
+//     Serial.print("\tA1:"); Serial.print(pos1, 3);
+//     Serial.print("\tA2:"); Serial.print(pos2, 3);
+//     Serial.print("\tA3:"); Serial.println(pos3, 3);
+// }
 
 
