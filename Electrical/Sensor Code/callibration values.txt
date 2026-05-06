@@ -1,0 +1,184 @@
+==========================================
+  ADS1220 Load Cell Calibration Tool
+==========================================
+  Unit label : units  (edit 'unitLabel' in source)
+  DRDY pin   : 30
+  CS pin     : 38
+  Reference  : external ratiometric (REFP0/REFN0)
+  Gain       : 128x  |  Rate: 20 SPS continuous
+
+Tip: if DRDY timeouts appear, run 'd' to inspect registers.
+
+=== Commands ===
+  t          Tare (zero with no load) - do this first
+  c <value>  Record calibration point with known load
+             e.g. 'c 5.0' if 5 kg is currently applied
+  l          List all calibration points recorded so far
+  x          Clear all calibration points and tare
+  f          Fit linear calibration, print constants
+  s          Toggle streaming calibrated readings
+  r          Single raw count read (DRDY-gated)
+  d          Dump ADS1220 register values (debug)
+  ?          Print this help
+================
+
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+raw = 0
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+raw = 0
+Taring... ensure NO load is applied.
+Sampling 64 readings for stable zero (DRDY-gated)...
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+Zero offset set to 0.00 counts.
+
+
+==========================================
+  ADS1220 Load Cell Calibration Tool
+==========================================
+  Unit label : units  (edit 'unitLabel' in source)
+  DRDY pin   : 30
+  CS pin     : 38
+  Reference  : external ratiometric (REFP0/REFN0)
+  Gain       : 128x  |  Rate: 20 SPS continuous
+
+Tip: if DRDY timeouts appear, run 'd' to inspect registers.
+
+=== Commands ===
+  t          Tare (zero with no load) - do this first
+  c <value>  Record calibration point with known load
+             e.g. 'c 5.0' if 5 kg is currently applied
+  l          List all calibration points recorded so far
+  x          Clear all calibration points and tare
+  f          Fit linear calibration, print constants
+  s          Toggle streaming calibrated readings
+  r          Single raw count read (DRDY-gated)
+  d          Dump ADS1220 register values (debug)
+  ?          Print this help
+================
+
+WARNING: DRDY timeout - check wiring and ADS1220 power.
+raw = 0
+
+==========================================
+  ADS1220 Load Cell Calibration Tool
+==========================================
+  Unit label : units  (edit 'unitLabel' in source)
+  DRDY pin   : 29
+  CS pin     : 38
+  Reference  : external ratiometric (REFP0/REFN0)
+  Gain       : 128x  |  Rate: 20 SPS continuous
+
+Tip: if DRDY timeouts appear, run 'd' to inspect registers.
+
+=== Commands ===
+  t          Tare (zero with no load) - do this first
+  c <value>  Record calibration point with known load
+             e.g. 'c 5.0' if 5 kg is currently applied
+  l          List all calibration points recorded so far
+  x          Clear all calibration points and tare
+  f          Fit linear calibration, print constants
+  s          Toggle streaming calibrated readings
+  r          Single raw count read (DRDY-gated)
+  d          Dump ADS1220 register values (debug)
+  ?          Print this help
+================
+
+Taring... ensure NO load is applied.
+Sampling 64 readings for stable zero (DRDY-gated)...
+Zero offset set to -6861.28 counts.
+
+Recording point at 5.0000 units.
+Sampling 64 readings (DRDY-gated)...
+Point 1: known=5.0000 units, raw=10547.83 counts, delta from zero=17409.11
+
+Recording point at 1.0000 units.
+Sampling 64 readings (DRDY-gated)...
+Point 2: known=1.0000 units, raw=-4222.05 counts, delta from zero=2639.23
+
+Recording point at 6.0000 units.
+Sampling 64 readings (DRDY-gated)...
+Point 3: known=6.0000 units, raw=10196.27 counts, delta from zero=17057.55
+
+Recording point at 1.0000 units.
+Sampling 64 readings (DRDY-gated)...
+Point 4: known=1.0000 units, raw=-4014.98 counts, delta from zero=2846.30
+
+
+=== CALIBRATION RESULT ===
+  Points used:        5 (including tare)
+  Zero offset:        -6973.64 counts
+  Counts per units   3116.4614
+  R^2 fit:            0.978375
+  NOTE: R^2 < 0.9999 - consider re-taring and re-collecting points.
+
+Copy these constants into your main sketch:
+  float zeroOffset    = -6973.6436f;
+  float countsPerUnit = 3116.4614f;
+
+Conversion formula:
+  units = (raw - zeroOffset) / countsPerUnit;
+==========================
+
