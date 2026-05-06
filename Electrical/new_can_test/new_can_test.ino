@@ -24,8 +24,8 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define rs (0.0191f/2.0f)
 
 
-#define HARDSTOP_MOTOR_1 -1.32645023f
-#define HARDSTOP_MOTOR_2 1.57079633f
+#define HARDSTOP_MOTOR_1 -1.05f //32645023f
+#define HARDSTOP_MOTOR_2 -1.57079633f
 #define HARDSTOP_MOTOR_3 1.57079633f
 
 #define CALIBRATION_VELOCITY -0.5f
@@ -91,7 +91,6 @@ angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]) {
 
     return m;
 }
-
 
 float float_to_uint(float x, float x_min, float x_max, int bits) {
     float span = x_max - x_min;
@@ -373,14 +372,13 @@ float t0 = 0;
 //     }
 // }
 
-float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
+float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold) {
     CAN_message_t rxMsg;
 
     float pos_initial = 0;
     bool initialized = false;
 
     float calibration_offsets[3];
-    float current_threshold = 1.1f;
 
 
     // ===== 1. Get initial position =====
@@ -411,16 +409,35 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
 
     // ===== 2. Calibration loop =====
     for (int i = 0; i < 3; i++) {
+        uint32_t start = millis();
+        while (millis() - start < 500) {
+            set_position(axis, pos_initial, 10, 2);
+            delay(5);  // ~200 Hz
+        }
+        start = millis();
+        bool torque_zero = false;
+        while (!torque_zero) {
+            set_position(axis, pos_initial, 0, 0);
+            delay(5);  // ~200 Hz
+            if (can3.read(rxMsg) && rxMsg.id == motor_id) {
+                unpack_reply(&rxMsg, motor_id);
 
-        set_position(axis, pos_initial, 10, 2);
-        delay(1000);
-        set_position(axis, pos_initial, 0, 0);
-        delay(500);
+                Serial.print("Reset torque: ");
+                Serial.println(torque);
+
+                if (abs(torque) < 0.1f) {
+                    torque_zero = true;
+                    break;
+                }
+    }
+
+        }
         set_velocity(axis, velocity, 2.0f);
-        delay(500);
+        delay(1000);
         bool done = false;
         uint32_t start_time = millis();
-        uint32_t timeout_ms = 15000;
+        uint32_t timeout_ms = 30000;
+        bool first_read  = true;
 
 
         while (!done) {
@@ -435,12 +452,20 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
                 done = true;
                 break;
             }
-
+            
             if (can3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
-
+                if (!first_read) {
+                    first_read = true;
+                }
+                else{
                 float current = torque;
-                Serial.println(current);
+                uint32_t lastprint = millis();
+                if (millis() - lastprint >100) {
+                    Serial.println(current);
+                    lastprint= millis();
+                }
+                
 
                 if (abs(current) > current_threshold) {
                     Serial.println("HARD STOP");
@@ -453,6 +478,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
                     Serial.println(current);
 
                     done = true;
+                }
                 }
             }
         }
@@ -473,30 +499,35 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id) {
 
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3) {
   Serial.println("Calibrating Splay");
-  calibration_offsets[0] = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY, MOTOR1_ID);
+  calibration_offsets[0] = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY, MOTOR1_ID, 1.1f);
   angles zero;
   zero.th1 = 0;
   zero.th2 = 0;
   zero.th3 = 0;
   bool motor_on[3] = {true, false, false};
+  
+    uint32_t start = millis();
+    while (millis() - start < 8000) {
+        set_joint_position(motor1, motor2, motor3, zero,
+                        calibration_offsets,
+                        10.0f, 2.0f, motor_on);
+        delay(5);  // ~200 Hz
+    }
+    Serial.println("Calibrating DIP");
+  calibration_offsets[2] = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID, 1.5f);
+  motor_on[2] = true;
   set_joint_position(motor1, motor2, motor3, zero,
                        calibration_offsets,
-                       3.0f, 3.0f, motor_on);
+                       3.0f, 1.5f, motor_on);
     delay(8000);
 //   Serial.println("Calibrating MCP");
-//   calibration_offsets[1] = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID);
+//   calibration_offsets[1] = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.5f);
 //   motor_on[1] = true;
 //   set_joint_position(motor1, motor2, motor3, zero,
 //                        calibration_offsets,
 //                        3.0f, 1.5f, motor_on);
 //     delay(8000);
-//   Serial.println("Calibrating DIP");
-//   calibration_offsets[2] = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID);
-//   motor_on[2] = true;
-//   set_joint_position(motor1, motor2, motor3, zero,
-//                        calibration_offsets,
-//                        3.0f, 1.5f, motor_on);
-//     delay(8000);
+  
   
 }
 
