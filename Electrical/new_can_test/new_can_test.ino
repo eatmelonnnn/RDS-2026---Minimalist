@@ -13,6 +13,9 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define V_MAX  30.0f
 #define T_MIN -18.0f
 #define T_MAX  18.0f
+#define LOGGING true
+
+#define CAL_DELAY 1000
 
 #define Rm1 0.005f
 #define Rm2 0.005f
@@ -24,9 +27,11 @@ FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define rs (0.0191f/2.0f)
 
 
-#define HARDSTOP_MOTOR_1 -1.05f //32645023f
-#define HARDSTOP_MOTOR_2 -1.57079633f
-#define HARDSTOP_MOTOR_3 1.57079633f
+
+
+#define HARDSTOP_JOINT_1 -1.05f //32645023f
+#define HARDSTOP_JOINT_2 -1.37079633f
+#define HARDSTOP_JOINT_3 1.97079633f
 
 #define CALIBRATION_VELOCITY -0.5f
 
@@ -55,8 +60,8 @@ struct motor_axis {
     int8_t motor_error;
 };
 
-angles poseA = {0.0f, 0.0f, 0.0f};
-angles poseB = {0.0f, 0.6f, 0.6f};
+angles poseA = {0.0f, 1.2f, 0.0f};
+angles poseB = {0.0, 0.0f, 1.2f};
 float pos1_unwrapped = 0;
 float pos2_unwrapped = 0;
 float pos3_unwrapped = 0;
@@ -65,32 +70,51 @@ tendonLengths multiply_AT(float th1, float th2, float th3);
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
 
 
+float calibration_hardstops_zero_motors(float JOINT_HARDSTOP, float motor_position, float joint_radius, float motor_radius) {
+    return motor_position - (JOINT_HARDSTOP*joint_radius/motor_radius);
+}
+
+
 tendonLengths multiply_AT(float th1, float th2, float th3) {
     tendonLengths y;
 
     
-    y.l1 = rw * th1 + rj * th2;
+    y.l1 = -rw * th1 - rj * th2;
     y.l2 = -rw * th1 - rj * th2 + rj * th3;
 
     return y;
 }
 
+angles motor_pos_to_joint_pos(float pos1, float pos2, float pos3, float calibration_offsets[3]) {
+    angles j;
+    j.th1 = (pos1 - calibration_offsets[0])*Rm1/rs;
+    float tendon_1 = (pos2 - calibration_offsets[1])*Rm2;
+    j.th2 = -(tendon_1 + rw*j.th1)/rj;
+    float tendon_2 = (pos3 - calibration_offsets[2])*Rm3;
+    j.th3 = (tendon_2 + rw*j.th1 + rj*j.th2)/rj;
+
+    return j;
+
+}
+
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]) {
   angles m;
 
-    float joint_angle_diff_1 = - HARDSTOP_MOTOR_1 + jointpos.th1;
-    float joint_angle_diff_2 = - HARDSTOP_MOTOR_2 + jointpos.th2;
-    float joint_angle_diff_3 = - HARDSTOP_MOTOR_3 + jointpos.th3;
+    float joint_angle_diff_1 = jointpos.th1;
+    float joint_angle_diff_2 =  jointpos.th2;
+    float joint_angle_diff_3 =  jointpos.th3;
 
     tendonLengths tendon_diff =
         multiply_AT(joint_angle_diff_1, joint_angle_diff_2, joint_angle_diff_3);
 
     m.th2 = calibration_offsets[1] + tendon_diff.l1 / Rm2;
     m.th3 = calibration_offsets[2] + tendon_diff.l2 / Rm3;
-    m.th1 = calibration_offsets[0] + joint_angle_diff_1 * rs / Rm3;
+    m.th1 = calibration_offsets[0] + joint_angle_diff_1 * rs / Rm1;
 
     return m;
 }
+
+
 
 float float_to_uint(float x, float x_min, float x_max, int bits) {
     float span = x_max - x_min;
@@ -382,7 +406,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 
 
     // ===== 1. Get initial position =====
-    Serial.println("Getting initial position");
+    if (!LOGGING) {Serial.println("Getting initial position");}
     while (!initialized) {
         get_encoder_values(axis);
         if (can3.read(rxMsg)) {
@@ -403,8 +427,8 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
         }
     }
 
-    Serial.print("Initial position: ");
-    Serial.println(pos_initial);
+    if (!LOGGING) {Serial.print("Initial position: ");
+    Serial.println(pos_initial);}
     // float curr_pos = pos_initial;
 
     // ===== 2. Calibration loop =====
@@ -421,9 +445,9 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
             delay(5);  // ~200 Hz
             if (can3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
-
+                if (!LOGGING) {
                 Serial.print("Reset torque: ");
-                Serial.println(torque);
+                Serial.println(torque);}
 
                 if (abs(torque) < 0.1f) {
                     torque_zero = true;
@@ -432,12 +456,14 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
     }
 
         }
+                    while (can3.read(rxMsg)) {
+                // just discard
+            }
         set_velocity(axis, velocity, 2.0f);
         delay(1000);
         bool done = false;
         uint32_t start_time = millis();
         uint32_t timeout_ms = 30000;
-        bool first_read  = true;
 
 
         while (!done) {
@@ -446,7 +472,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
             set_velocity(axis, velocity, 2.0f);
             // timeout
             if (millis() - start_time > timeout_ms) {
-                Serial.println("TIMEOUT");
+                if (!LOGGING) {Serial.println("TIMEOUT");}
                 set_velocity(axis, 0.0f, 2.0f);
                 calibration_offsets[i] = NAN;
                 done = true;
@@ -455,30 +481,27 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
             
             if (can3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
-                if (!first_read) {
-                    first_read = true;
-                }
-                else{
+                
                 float current = torque;
-                uint32_t lastprint = millis();
-                if (millis() - lastprint >100) {
-                    Serial.println(current);
+                static uint32_t lastprint = millis();
+                if ((millis() - lastprint) > 200) {
+                    // Serial.println(current);
                     lastprint= millis();
                 }
                 
 
                 if (abs(current) > current_threshold) {
-                    Serial.println("HARD STOP");
+                    if (!LOGGING) {Serial.println("HARD STOP");}
 
                     set_velocity(axis, 0.0f, 1.0f);
 
                     calibration_offsets[i] = position;
+                    if (!LOGGING) {
                     Serial.println(calibration_offsets[i]);
                     Serial.print("torque:");
-                    Serial.println(current);
+                    Serial.println(current);}
 
                     done = true;
-                }
                 }
             }
         }
@@ -488,9 +511,9 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
         (calibration_offsets[0] +
          calibration_offsets[1] +
          calibration_offsets[2]) / 3.0f;
-
+    if (!LOGGING) {
     Serial.print("Final calibration: ");
-    Serial.println(avg);
+    Serial.println(avg);}
 
     return avg;
 }
@@ -498,8 +521,9 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 
 
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3) {
-  Serial.println("Calibrating Splay");
-  calibration_offsets[0] = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY, MOTOR1_ID, 1.1f);
+  if (!LOGGING) {Serial.println("Calibrating Splay");}
+  float motor_pos_1 = raw_calibrate_motor(motor1, CALIBRATION_VELOCITY, MOTOR1_ID, 1.1f);
+  calibration_offsets[0] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_1, motor_pos_1, rw, Rm1);
   angles zero;
   zero.th1 = 0;
   zero.th2 = 0;
@@ -507,26 +531,35 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
   bool motor_on[3] = {true, false, false};
   
     uint32_t start = millis();
-    while (millis() - start < 8000) {
+    while (millis() - start < CAL_DELAY) {
         set_joint_position(motor1, motor2, motor3, zero,
                         calibration_offsets,
                         10.0f, 2.0f, motor_on);
         delay(5);  // ~200 Hz
     }
-    Serial.println("Calibrating DIP");
-  calibration_offsets[2] = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID, 1.5f);
+    
+  if (!LOGGING) {Serial.println("Calibrating MCP");}
+  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.3f);
+  calibration_offsets[1] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_2, motor_pos_2, rj, Rm2);
+  motor_on[1] = true;
+   start = millis();
+    while (millis() - start < CAL_DELAY) {
+        set_joint_position(motor1, motor2, motor3, zero,
+                        calibration_offsets,
+                        10.0f, 2.0f, motor_on);
+        delay(5);  // ~200 Hz
+    }
+    if (!LOGGING) {Serial.println("Calibrating DIP");}
+  float motor_pos_3 = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID, 1.5f);
+  calibration_offsets[2] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_3, motor_pos_3, rj, Rm3);
   motor_on[2] = true;
-  set_joint_position(motor1, motor2, motor3, zero,
-                       calibration_offsets,
-                       3.0f, 1.5f, motor_on);
-    delay(8000);
-//   Serial.println("Calibrating MCP");
-//   calibration_offsets[1] = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.5f);
-//   motor_on[1] = true;
-//   set_joint_position(motor1, motor2, motor3, zero,
-//                        calibration_offsets,
-//                        3.0f, 1.5f, motor_on);
-//     delay(8000);
+  start = millis();
+    while (millis() - start < CAL_DELAY) {
+        set_joint_position(motor1, motor2, motor3, zero,
+                        calibration_offsets,
+                        10.0f, 2.0f, motor_on);
+        delay(5);  // ~200 Hz
+    }
   
   
 }
@@ -544,7 +577,7 @@ float calibration_hardstops[3] = {0, 0, 0};
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);  
-  Serial.println("Starting...");
+  if (!LOGGING) {Serial.println("Starting...");}
   delay(100);
 
   can3.begin();
@@ -558,20 +591,20 @@ void setup() {
   delay(1000);
   enter_MIT_control_mode();
 
-  Serial.println("Entered MIT mode");
+  if (!LOGGING) {Serial.println("Entered MIT mode");}
   // set_position(&motor1, 2.5f, 8.0f, 0.5f);
   // set_position(&motor2, 2.5f, 8.0f, 0.5f);
   //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
   delay(100);
-  Serial.println("Starting Calibration");
+  if (!LOGGING) {Serial.println("Starting Calibration");}
   
   full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
-  Serial.print("Calibration offsets: ");
+  if (!LOGGING) {Serial.print("Calibration offsets: ");}
   for (int i = 0; i < 3; i++) {
-    Serial.print(calibration_hardstops[i]);
+    if (!LOGGING) { Serial.print(calibration_hardstops[i]);}
   }
-  delay(10000);
-  Serial.println("");
+  delay(1000);
+if (!LOGGING) {Serial.println("");}
   t0 = millis() / 1000.0f; 
   
 }
@@ -596,29 +629,30 @@ angles generate_step_response(angles a, angles b, float freq) {
 }
 
 float pos1 = 0, pos2 = 0, pos3 = 0;
-float target1 = 0, target2 = 0, target3 = 0;
+float jtarget1 = 0, jtarget2 = 0, jtarget3 = 0;
+angles target_joint;
 
 
 void loop() {
   
-//   static uint32_t lastCmd = 0;
-// if (millis() - lastCmd >= 10) {  
+  static uint32_t lastCmd = 0;
+if (millis() - lastCmd >= 10) {  
 
-//     angles target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
-//     bool motor_on[3] = {true, true, true};
-//     // Send to motors
-//     set_joint_position(&motor1, &motor2, &motor3,
-//                        target_joint,
-//                        calibration_hardstops,
-//                        8.0f, 2.0f, motor_on);
+    target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
+    bool motor_on[3] = {true, true, true};
+    // Send to motors
+    set_joint_position(&motor1, &motor2, &motor3,
+                       target_joint,
+                       calibration_hardstops,
+                       25.0f, 3.0f, motor_on);
 
     
-//     target1 = unwrap_angle(target_joint.th1);
-//     target2 = unwrap_angle(target_joint.th2);
-//     target3 = unwrap_angle(target_joint.th3);
+    jtarget1 = unwrap_angle(target_joint.th1);
+    jtarget2 = unwrap_angle(target_joint.th2);
+    jtarget3 = unwrap_angle(target_joint.th3);
 
-//     lastCmd = millis();
-// }
+    lastCmd = millis();
+}
 //   static uint32_t lastCmd = 0;
 //   if (millis() - lastCmd >= 10) {
 //       target1 = 0; //generate_sine_wave(&motor1, 0.5f, 1.5f);
@@ -654,14 +688,32 @@ void loop() {
 
 static uint32_t lastPrint = 0;
 if (millis() - lastPrint >= 100) {
-
-    Serial.print(target1); Serial.print("\t");
-    Serial.print(pos1); Serial.print("\t");
-
-    Serial.print(target2); Serial.print("\t");
-    Serial.print(pos2); Serial.print("\t");
-
-    Serial.print(target3); Serial.print("\t");
+    angles ajointpos = motor_pos_to_joint_pos(pos1,pos2, pos3, calibration_hardstops);
+    angles tmotorpos = joint_pos_to_motor_pos(target_joint, calibration_hardstops);
+        Serial.print(millis());
+    Serial.print(",");
+    Serial.print(jtarget1);
+    Serial.print(",");
+    Serial.print(ajointpos.th1);
+    Serial.print(",");
+    Serial.print(jtarget2);
+    Serial.print(",");
+    Serial.print(ajointpos.th2);
+    Serial.print(",");
+    Serial.print(jtarget3);
+    Serial.print(",");
+    Serial.print(ajointpos.th3);
+    Serial.print(",");
+    Serial.print(tmotorpos.th1);
+    Serial.print(",");
+    Serial.print(pos1);
+    Serial.print(",");
+    Serial.print(tmotorpos.th2);
+    Serial.print(",");
+    Serial.print(pos2);
+    Serial.print(",");
+    Serial.print(tmotorpos.th3);
+    Serial.print(",");
     Serial.println(pos3);
 
     lastPrint = millis();
