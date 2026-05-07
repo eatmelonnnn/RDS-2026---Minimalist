@@ -32,8 +32,10 @@ constexpr uint8_t CMD_WREG  = 0x40;
 
 // ---------- Calibration constants ----------
 // Update countsPerUnit if you recalibrate with the calibration tool.
-const float countsPerUnit =  3116.4614f;
-const char* unitLabel     = "kg";
+// const float countsPerUnit =  3116.4614f;
+// const float countsPerUnit =  2886.4956;
+const float countsPerUnit =  2418.9988;
+const char* unitLabel     = "N";
 float       zeroOffset    = 0.0f;   // set automatically at startup
 
 // ---------- DRDY timeout ----------
@@ -125,7 +127,8 @@ void setup() {
   delay(50);
 
   adsInit();
-
+  zeroOffset = averageRaw(64);
+  Serial.printf("Zero offset at startup: %.2f counts\n", zeroOffset);
   // Auto-tare: average 64 readings at startup as the zero reference
   zeroOffset = averageRaw(64);
 }
@@ -135,6 +138,7 @@ void loop() {
   if (digitalRead(PIN_DRDY) == LOW) {
     int32_t raw = readData();
     float   val = (raw - zeroOffset) / countsPerUnit;
-    Serial.printf("%.4f %s\n", val, unitLabel);
+    Serial.printf("raw=%9ld  delta=%9.0f  %.4f %s\n",
+                  raw, raw - zeroOffset, val, unitLabel);
   }
 }
