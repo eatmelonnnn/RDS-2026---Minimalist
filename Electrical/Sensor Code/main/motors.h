@@ -11,10 +11,14 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define MOTOR2_ID 4
 #define MOTOR3_ID 5
 
+#define KT 0.127f
+
 #define P_MIN -12.5f //rad
 #define P_MAX  12.5f
 #define V_MIN -30.0f //rad/s
 #define V_MAX  30.0f
+#define I_MIN -18.0f
+#define I_MAX  18.0f
 #define T_MIN -18.0f
 #define T_MAX  18.0f
 #define LOGGING true
@@ -46,6 +50,18 @@ extern int p_int;
 extern int v_int;
 extern int i_int;
 extern float T_int;
+
+//for different CAN packets
+typedef enum {
+CAN_PACKET_SET_DUTY = 0, //Duty Cycle Mode
+CAN_PACKET_SET_CURRENT, //Current Loop Mode
+CAN_PACKET_SET_CURRENT_BRAKE, // Current BrakeMode
+CAN_PACKET_SET_RPM,
+CAN_PACKET_SET_POS,
+CAN_PACKET_SET_ORIGIN_HERE,
+CAN_PACKET_SET_POS_SPD,
+CAN_PACKET_SET_mit=8,
+} CAN_PACKET_ID;
 
 // for sine wave 
 extern float t0;

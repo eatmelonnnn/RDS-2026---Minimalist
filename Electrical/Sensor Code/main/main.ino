@@ -1,9 +1,12 @@
 #include "motors.h"
+#include "tensionsensor.h"
+
+#define FINGER_POSITION_CONTROL_MODE 1
 
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
-angles poseA = {0.0f, 1.2f, 0.0f};
-angles poseB = {0.0, 0.0f, 1.2f};
+angles poseA = {0.0f, PI/2, 0.0f};
+angles poseB = {0.0, 0.0f, PI/2};
 float pos1_unwrapped = 0;
 float pos2_unwrapped = 0;
 float pos3_unwrapped = 0;
@@ -12,10 +15,13 @@ motor_axis motor1;
 motor_axis motor2;
 motor_axis motor3;
 
-float calibration_hardstops[3] = {1.01, 0.17, 6.38};
+float tension_offset_dip  = 0.0;
+
+float calibration_hardstops[3] = {0.38, -0.49, -0.96};
 
 void setup() {
   // put your setup code here, to run once:
+  noInterrupts();
   Serial.begin(115200);  
   if (!LOGGING) {Serial.println("Starting...");}
   delay(100);
@@ -29,26 +35,40 @@ void setup() {
 
   exit_MIT_control_mode();
   delay(1000);
-  enter_MIT_control_mode();
 
-  if (!LOGGING) {Serial.println("Entered MIT mode");}
-  // set_position(&motor1, 2.5f, 8.0f, 0.5f);
-  // set_position(&motor2, 2.5f, 8.0f, 0.5f);
-  //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
-  delay(100);
-  if (!LOGGING) {Serial.println("Starting Calibration");}
-  
-  /*
-  full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
-  if (!LOGGING) {Serial.print("Calibration offsets: ");}
-  for (int i = 0; i < 3; i++) {
-    if (!LOGGING) { Serial.print(calibration_hardstops[i]);}
+  if (FINGER_POSITION_CONTROL_MODE) {
+    enter_MIT_control_mode();
+
+    if (!LOGGING) {Serial.println("Entered MIT mode");}
+    // set_position(&motor1, 2.5f, 8.0f, 0.5f);
+    // set_position(&motor2, 2.5f, 8.0f, 0.5f);
+    //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
+    delay(100);
+    if (!LOGGING) {Serial.println("Starting Calibration");}
+    
+    /*
+    full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
+    if (!LOGGING) {Serial.print("Calibration offsets: ");}
+    for (int i = 0; i < 3; i++) {
+      if (!LOGGING) { Serial.print(calibration_hardstops[i]);}
+    }
+    delay(1000);
+    if (!LOGGING) {Serial.println("");}
+    t0 = millis() / 1000.0f; 
+    */
+    
   }
-  delay(1000);
-  if (!LOGGING) {Serial.println("");}
-  t0 = millis() / 1000.0f; 
-  */
-  
+else {
+    cs_setup(PIN_CS_DIP);
+    spi_setup();
+    adsInit(PIN_CS_DIP);
+    tension_offset_dip = averageRaw(64, PIN_CS_DIP);
+    Serial.printf("Zero offset at startup: %.2f counts\n", tension_offset_dip);
+    // Auto-tare: average 64 readings at startup as the zero reference
+    tension_offset_dip = averageRaw(64, PIN_CS_DIP);
+    // enableInterrupts();
+    // attachInterrupt(digitalPinToInterrupt(PIN_CS_DIP), read_tension_sensor_dip, Falling) ;
+  }
 }
 
 float pos1 = 0, pos2 = 0, pos3 = 0;
@@ -58,6 +78,7 @@ angles target_joint;
 
 void loop() {
 
+if (FINGER_POSITION_CONTROL_MODE) {
     static uint32_t lastCmd = 0;
     if (millis() - lastCmd >= 10) {  
 
@@ -132,4 +153,5 @@ void loop() {
 
         lastPrint = millis();
     }
+}
 }

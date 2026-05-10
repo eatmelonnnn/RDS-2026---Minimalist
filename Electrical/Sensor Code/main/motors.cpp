@@ -5,14 +5,14 @@ float float_to_uint(float x, float x_min, float x_max, int bits) {
     return (int)((x - x_min) * ((float)((1 << bits) - 1)) / span);
 }
 
-void comm_can_transmit_sid(uint32_t id, const uint8_t *data, uint8_t len){
+void comm_can_transmit_sid(uint32_t id, const uint8_t *data, uint8_t len, uint8_t flag_extended){
   if (len>8){
     len = 8;
   } 
 
   CAN_message_t msg;
   msg.id = id;
-  msg.flags.extended = 0;
+  msg.flags.extended = flag_extended;
   msg.len = len;
 
   for (int i=0; i<len; i++){
@@ -53,7 +53,7 @@ float uint_to_float(int x_int, float x_min, float x_max, int bits){
 
 void get_encoder_values(motor_axis *axis) {
   uint8_t enc_bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC};
-  comm_can_transmit_sid(axis->controller_id, enc_bytes, 8);
+  comm_can_transmit_sid(axis->controller_id, enc_bytes, 8, 0);
 }
 
 void unpack_reply(CAN_message_t *RxMessage, int id_desired){
@@ -110,21 +110,21 @@ void print_data(CAN_message_t rxMsg, int motorid){
 // ================================================ MOTORS ===============================================================
 void enter_MIT_control_mode(){
   uint8_t control_mode_bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0XFC};
-  comm_can_transmit_sid(MOTOR1_ID, control_mode_bytes, 8);
+  comm_can_transmit_sid(MOTOR1_ID, control_mode_bytes, 8, 0);
   delay(100);
-  comm_can_transmit_sid(MOTOR2_ID, control_mode_bytes, 8);
+  comm_can_transmit_sid(MOTOR2_ID, control_mode_bytes, 8, 0);
   delay(100);
-  comm_can_transmit_sid(MOTOR3_ID, control_mode_bytes, 8);
+  comm_can_transmit_sid(MOTOR3_ID, control_mode_bytes, 8,0);
 
 }
 
 void exit_MIT_control_mode() {
     uint8_t bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD};
-    comm_can_transmit_sid(MOTOR1_ID, bytes, 8);
+    comm_can_transmit_sid(MOTOR1_ID, bytes, 8,0);
     delay(100);
-    comm_can_transmit_sid(MOTOR2_ID, bytes, 8);
+    comm_can_transmit_sid(MOTOR2_ID, bytes, 8,0);
     delay(100);
-    comm_can_transmit_sid(MOTOR3_ID, bytes, 8);
+    comm_can_transmit_sid(MOTOR3_ID, bytes, 8,0);
 }
 
 // ====== Motor Initialization ======
@@ -157,7 +157,23 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     bytes[6] = ((kd_int & 0xF) << 4) | (tor_int >> 8);
     bytes[7] = tor_int & 0xFF;
 
-    comm_can_transmit_sid(axis->controller_id, bytes, 8);
+    comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
+}
+
+void buffer_append_int32(uint8_t* buffer, int32_t number, int32_t *index) {
+    buffer[(*index)++] = number >> 24;
+    buffer[(*index)++] = number >> 16;
+    buffer[(*index)++] = number >> 8;
+    buffer[(*index)++] = number;
+}
+
+void set_current(motor_axis *axis, float current) {
+    current = constrain(current, I_MIN, I_MAX);
+    int32_t send_index = 0;
+    uint8_t buffer[4];
+    buffer_append_int32(buffer, (int32_t)(current * 1000.0), &send_index);
+    comm_can_transmit_sid(axis->controller_id |
+    ((uint32_t)CAN_PACKET_SET_CURRENT << 8), buffer, 4, 1);
 }
 
 float calibration_hardstops_zero_motors(float JOINT_HARDSTOP, float motor_position, float joint_radius, float motor_radius) {
@@ -253,7 +269,7 @@ void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     bytes[6] = ((kd_int & 0xF) << 4) | (tor_int >> 8);
     bytes[7] = tor_int & 0xFF;
 
-    comm_can_transmit_sid(axis->controller_id, bytes, 8);
+    comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold) {
