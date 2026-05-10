@@ -8,4 +8,4 @@
 
 # Optional: Ignore step files if you only want native CAD in the repo
 # *.step
-# *.stps"**/.history/" 
+# *.stps"**/.history/
