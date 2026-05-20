@@ -34,6 +34,7 @@ struct cartesian_pos {
 };
 
 float norm(float a, float b);
-// angles cartesian_pos_to_joint_pos(cartesian_pos xyz);
+
+angles cartesian_pos_to_joint_pos(cartesian_pos xyz);
 
 #endif
