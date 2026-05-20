@@ -1,0 +1,29 @@
+-- Install configuration: ""
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/Full assembly_visual_urdf_export.csv
+-- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/finger.urdf
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/base_link.STL
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/mcp_link.STL
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/pip_link.STL
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/splay_link.STL
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/display.launch
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/gazebo.launch
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config/joint_names_Full assembly_visual_urdf_export.yaml
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/package_run_dependencies/finger_description
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/parent_prefix_path/finger_description
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.sh
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.dsv
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.sh
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.dsv
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.bash
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.sh
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.zsh
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.dsv
+-- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.dsv
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/packages/finger_description
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig.cmake
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig-version.cmake
+-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.xml

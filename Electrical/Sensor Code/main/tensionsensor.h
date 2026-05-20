@@ -57,24 +57,24 @@ void sendCmd(uint8_t cmd, uint8_t PIN_CS);
 
 void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS);
 
-void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset);
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY);
 void isr_dip();
 void isr_mcp();
 
 
 // ---------- DRDY wait ----------
-bool waitForDRDY();
+bool waitForDRDY(uint8_t PIN_DRDY);
 
 // ---------- Read one fresh conversion ----------
-int32_t readData(uint8_t PIN_CS);
+int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN);
 
 // ---------- Average N fresh conversions ----------
-int32_t averageRaw(uint16_t samples,uint8_t PIN_CS);
+int32_t averageRaw(uint16_t samples,uint8_t PIN_CS,uint8_t PIN_DRDY);
 
 // ---------- ADS1220 init ----------
 void adsInit(uint8_t PIN_CS);
 
-void cs_setup(uint8_t PIN_CS);
+void cs_setup(uint8_t PIN_CS, uint8_t PIN_DRDY);
 
 
 void spi_setup();
