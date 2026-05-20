@@ -149,7 +149,7 @@ void adsInit(uint8_t PIN_CS) {
   delay(100);
 }
 
-void cs_setup(uint8_t PIN_CS){
+void cs_setup(uint8_t PIN_CS, uint8_t PIN_DRDY){
     pinMode(PIN_CS, OUTPUT);
     pinMode(PIN_DRDY, INPUT);
     digitalWriteFast(PIN_CS, HIGH);

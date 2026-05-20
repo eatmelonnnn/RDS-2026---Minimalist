@@ -1,7 +1,7 @@
 #include "motors.h"
 #include "tensionsensor.h"
 
-#define FINGER_POSITION_CONTROL_MODE 0
+#define FINGER_POSITION_CONTROL_MODE 1
 
 k dip_control = {1, 0, 0};
 
@@ -62,16 +62,20 @@ void setup() {
     
   }
 else {
-    Serial.println("Starting force control")
-    cs_setup(PIN_CS_DIP);
-    cs_setup(PIN_CS_MCP);
+    Serial.println("Starting force control");
+    cs_setup(PIN_CS_DIP,  PIN_DRDY_DIP);
+    cs_setup(PIN_CS_MCP, PIN_DRDY_MCP);
+    Serial.println("CS pins set up");
     spi_setup();
+    Serial.println("SPI setup");
     adsInit(PIN_CS_DIP);
     adsInit(PIN_CS_MCP);
+    Serial.println("ADS initialize");
     zero_sensors();
     exit_MIT_control_mode();
     delay(1000);
     motor_enter_MIT_control_mode(&motor1);
+    Serial.println("splay motor under position control");
     attachInterrupt(digitalPinToInterrupt(PIN_CS_DIP), isr_dip, FALLING);
     attachInterrupt(digitalPinToInterrupt(PIN_CS_MCP), isr_mcp, FALLING);
   }
