@@ -176,6 +176,11 @@ void set_current(motor_axis *axis, float current) {
     ((uint32_t)CAN_PACKET_SET_CURRENT << 8), buffer, 4, 1);
 }
 
+void set_torque(motor_axis *axis, float torque) {
+    float current = torque / KT;
+    set_current(axis,current);
+}
+
 float calibration_hardstops_zero_motors(float JOINT_HARDSTOP, float motor_position, float joint_radius, float motor_radius) {
     return motor_position - (JOINT_HARDSTOP*joint_radius/motor_radius);
 }
@@ -278,7 +283,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
     float pos_initial = 0;
     bool initialized = false;
 
-    float calibration_offsets[3];
+    float calibration_sum = 0;
 
 
     // ===== 1. Get initial position =====
@@ -308,10 +313,15 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
     // float curr_pos = pos_initial;
 
     // ===== 2. Calibration loop =====
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < NUM_CAL_CYCLES; i++) {
         uint32_t start = millis();
         while (millis() - start < 500) {
+            if (i == 0) {
             set_position(axis, pos_initial, 10, 2);
+            }
+            else{
+                set_position(axis,calibration_sum/(i*NUM_CAL_MEASURES_PER_CYCLE) - velocity*0.8, 10, 2);
+            }
             delay(5);  // ~200 Hz
         }
         start = millis();
@@ -350,7 +360,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
             if (millis() - start_time > timeout_ms) {
                 if (!LOGGING) {Serial.println("TIMEOUT");}
                 set_velocity(axis, 0.0f, 2.0f);
-                calibration_offsets[i] = NAN;
+                calibration_sum = NAN;
                 done = true;
                 break;
             }
@@ -368,12 +378,12 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 
                 if (abs(current) > current_threshold) {
                     if (!LOGGING) {Serial.println("HARD STOP");}
-
-                    set_velocity(axis, 0.0f, 1.0f);
-
-                    calibration_offsets[i] = position;
+                    for (int i = 0; i < NUM_CAL_MEASURES_PER_CYCLE; i++) {
+                        set_velocity(axis, 0.0f, 1.0f);
+                        calibration_sum = calibration_sum + position;
+                    }
                     if (!LOGGING) {
-                    Serial.println(calibration_offsets[i]);
+                    Serial.println(position);
                     Serial.print("torque:");
                     Serial.println(current);}
 
@@ -383,10 +393,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
         }
     }
 
-    float avg =
-        (calibration_offsets[0] +
-         calibration_offsets[1] +
-         calibration_offsets[2]) / 3.0f;
+    float avg = calibration_sum/ (NUM_CAL_CYCLES * NUM_CAL_MEASURES_PER_CYCLE);
     if (!LOGGING) {
     Serial.print("Final calibration: ");
     Serial.println(avg);}

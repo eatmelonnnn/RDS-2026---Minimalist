@@ -19,6 +19,9 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define T_MAX  18.0f
 #define LOGGING true
 
+#define NUM_CAL_CYCLES 2
+#define NUM_CAL_MEASURES_PER_CYCLE 3
+
 #define CAL_DELAY 1000
 
 #define Rm1 0.005f

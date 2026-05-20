@@ -3,6 +3,10 @@
 
 #define FINGER_POSITION_CONTROL_MODE 1
 
+k dip_control = {1, 0, 0};
+
+k mcp_control = {1, 0, 0};
+
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
 angles poseA = {0.0f, PI/2, 0.0f};
@@ -17,11 +21,10 @@ motor_axis motor3;
 
 float tension_offset_dip  = 0.0;
 
-float calibration_hardstops[3] = {0.38, -0.49, -0.96};
+float calibration_hardstops[3] = {0.7, -0.5, 0.57};
 
 void setup() {
   // put your setup code here, to run once:
-  noInterrupts();
   Serial.begin(115200);  
   if (!LOGGING) {Serial.println("Starting...");}
   delay(100);
@@ -38,7 +41,7 @@ void setup() {
 
   if (FINGER_POSITION_CONTROL_MODE) {
     enter_MIT_control_mode();
-
+    
     if (!LOGGING) {Serial.println("Entered MIT mode");}
     // set_position(&motor1, 2.5f, 8.0f, 0.5f);
     // set_position(&motor2, 2.5f, 8.0f, 0.5f);
@@ -60,14 +63,13 @@ void setup() {
   }
 else {
     cs_setup(PIN_CS_DIP);
+    cs_setup(PIN_CS_MCP);
     spi_setup();
     adsInit(PIN_CS_DIP);
-    tension_offset_dip = averageRaw(64, PIN_CS_DIP);
-    Serial.printf("Zero offset at startup: %.2f counts\n", tension_offset_dip);
-    // Auto-tare: average 64 readings at startup as the zero reference
-    tension_offset_dip = averageRaw(64, PIN_CS_DIP);
-    // enableInterrupts();
-    // attachInterrupt(digitalPinToInterrupt(PIN_CS_DIP), read_tension_sensor_dip, Falling) ;
+    adsInit(PIN_CS_MCP);
+    zero_sensors();
+    attachInterrupt(digitalPinToInterrupt(PIN_CS_DIP), isr_dip, FALLING);
+    attachInterrupt(digitalPinToInterrupt(PIN_CS_MCP), isr_mcp, FALLING);
   }
 }
 
@@ -121,6 +123,8 @@ if (FINGER_POSITION_CONTROL_MODE) {
       // Serial.println();
   }
 
+
+
     static uint32_t lastPrint = 0;
     if (millis() - lastPrint >= 100) {
         angles ajointpos = motor_pos_to_joint_pos(pos1,pos2, pos3, calibration_hardstops);
@@ -153,5 +157,21 @@ if (FINGER_POSITION_CONTROL_MODE) {
 
         lastPrint = millis();
     }
+}
+else {
+  // TODO: actual loop
+  
+  static bool initial_loop_mcp = true;
+  static float prev_error_mcp;
+  static float i_error_mcp = 0;
+  finger_tensions_torques desired = generate_step_tensions();
+  float torque_mcp = pid_correction(get_mcp_tension(),
+   desired.mcp_tension,
+    &prev_error_mcp,
+     &i_error_mcp,
+      mcp_control,
+       &initial_loop_mcp) + desired.mcp_torque;
+  set_torque(&motor2, torque_mcp);
+
 }
 }

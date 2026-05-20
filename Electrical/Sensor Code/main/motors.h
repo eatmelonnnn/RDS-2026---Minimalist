@@ -25,6 +25,9 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
 #define CAL_DELAY 1000
 
+#define NUM_CAL_CYCLES 2
+#define NUM_CAL_MEASURES_PER_CYCLE 3
+
 #define Rm1 0.005f
 #define Rm2 0.005f
 #define Rm3 0.005f
@@ -118,6 +121,8 @@ void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd);
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold);
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3);
+
+void set_torque(motor_axis *axis, float torque);
 
 float generate_sine_wave(motor_axis *axis, float amplitude, float angular_frequency);
 angles generate_step_response(angles a, angles b, float freq);
