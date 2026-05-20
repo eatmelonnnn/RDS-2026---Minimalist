@@ -1,0 +1,9 @@
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/uninstall.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/finger_description_uninstall.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/test.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/edit_cache.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/rebuild_cache.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/list_install_components.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/install.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/install/local.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/install/strip.dir
