@@ -3,6 +3,16 @@
 
 SPISettings adsSPI(100'000, MSBFIRST, SPI_MODE1);
 
+volatile float tension_dip = 0.0f;
+volatile float tension_mcp = 0.0f;
+
+volatile bool is_dip = true;
+
+int32_t zero_offset_dip = 0;
+int32_t zero_offset_mcp = 0;
+
+
+
 // ---------- SPI helpers ----------
 inline void csLow(uint8_t PIN_CS)  { digitalWriteFast(PIN_CS, LOW);  delayMicroseconds(5); }
 inline void csHigh(uint8_t PIN_CS) { delayMicroseconds(5); digitalWriteFast(PIN_CS, HIGH); }
@@ -16,6 +26,7 @@ void sendCmd(uint8_t cmd, uint8_t PIN_CS) {
   delayMicroseconds(20);
 }
 
+
 void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS) {
   SPI1.beginTransaction(adsSPI);
   csLow(PIN_CS);
@@ -26,8 +37,17 @@ void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS) {
   delayMicroseconds(20);
 }
 
+finger_tensions_torques generate_step_tensions() {
+  finger_tensions_torques t;
+  t.mcp_tension = 150;
+  t.dip_tension = 150;
+  t.mcp_torque = 0.5;
+  t.dip_torque = 0.5;
+  return t;
+}
+
 // ---------- DRDY wait ----------
-bool waitForDRDY() {
+bool waitForDRDY(uint8_t PIN_DRDY) {
   uint32_t t0 = millis();
   while (digitalRead(PIN_DRDY) == HIGH) {
     if (millis() - t0 > DRDY_TIMEOUT_MS) {
@@ -39,8 +59,8 @@ bool waitForDRDY() {
 }
 
 // ---------- Read one fresh conversion ----------
-int32_t readData(uint8_t PIN_CS) {
-  if (!waitForDRDY()) return 0;
+int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN) {
+  if (!waitForDRDY(DRDY_PIN)) return 0;
   SPI1.beginTransaction(adsSPI);
   csLow(PIN_CS);
   uint8_t b2 = SPI1.transfer(0x00);
@@ -53,13 +73,68 @@ int32_t readData(uint8_t PIN_CS) {
   return r;
 }
 
+void isr_dip() {
+  is_dip = true;
+  update_sensor_readings(PIN_CS_DIP, zero_offset_dip, PIN_DRDY_DIP);
+}
+
+void isr_mcp() {
+  is_dip = false;
+  update_sensor_readings(PIN_CS_MCP, zero_offset_mcp,  PIN_DRDY_MCP);
+}
+
+float get_dip_tension() {
+  return tension_dip;
+}
+
+float get_mcp_tension() {
+  return tension_mcp;
+}
+
+float pid_correction(float actual, float desired, float* prev_error, float *i_error, k pid, bool *initial_loop) {
+  float e = actual - desired;
+  float d_error;
+  if (*initial_loop) {
+    d_error = 0;
+    *initial_loop = false;
+  }
+  else {
+    d_error = e-*prev_error;
+  }
+  float correction = pid.p*e + pid.i*(*i_error) + pid.d*d_error;
+  *i_error = constrain(*i_error + e, INTERROR_MIN, INTERROR_MAX);
+  *prev_error = e;
+  return correction;
+
+}
+
+
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY) {
+  int32_t raw = readData(PIN_CS,  PIN_DRDY);
+  float tension = (raw - zeroOffset) / countsPerUnit;
+  if (is_dip) {
+    tension_dip = tension;
+  }
+  else {
+    tension_mcp = tension;
+  }
+}
+
 // ---------- Average N fresh conversions ----------
-float averageRaw(uint16_t samples,uint8_t PIN_CS) {
+int32_t averageRaw(uint16_t samples,uint8_t PIN_CS,uint8_t PIN_DRDY) {
   int64_t sum = 0;
   for (uint16_t i = 0; i < samples; i++) {
-    sum += readData(PIN_CS);
+    sum += readData(PIN_CS, PIN_DRDY);
   }
   return (float)sum / (float)samples;
+}
+
+
+void zero_sensors() {
+  zero_offset_mcp = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_MCP,  PIN_DRDY_MCP);
+  Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_mcp);
+  zero_offset_dip = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_DIP, PIN_DRDY_DIP);
+  Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_dip);
 }
 
 // ---------- ADS1220 init ----------
@@ -74,7 +149,7 @@ void adsInit(uint8_t PIN_CS) {
   delay(100);
 }
 
-void cs_setup(uint8_t PIN_CS){
+void cs_setup(uint8_t PIN_CS, uint8_t PIN_DRDY){
     pinMode(PIN_CS, OUTPUT);
     pinMode(PIN_DRDY, INPUT);
     digitalWriteFast(PIN_CS, HIGH);

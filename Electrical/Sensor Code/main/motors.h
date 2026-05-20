@@ -4,6 +4,7 @@
 #include <FlexCAN_T4.h>
 #include <math.h>
 #include <stdint.h>
+#include "kinematics.h"
 
 extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
@@ -25,6 +26,9 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
 #define CAL_DELAY 1000
 
+#define NUM_CAL_CYCLES 2
+#define NUM_CAL_MEASURES_PER_CYCLE 3
+
 #define Rm1 0.005f
 #define Rm2 0.005f
 #define Rm3 0.005f
@@ -34,7 +38,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define rw 0.010f
 #define rs (0.0191f/2.0f)
 
-#define HARDSTOP_JOINT_1 -1.05f //32645023f
+#define HARDSTOP_JOINT_1 -0.349f //32645023f
 #define HARDSTOP_JOINT_2 -1.37079633f
 #define HARDSTOP_JOINT_3 1.97079633f
 
@@ -66,16 +70,6 @@ CAN_PACKET_SET_mit=8,
 // for sine wave 
 extern float t0;
 
-struct tendonLengths {
-    float l1;
-    float l2;
-};
-
-struct angles {
-    float th1;
-    float th2;
-    float th3;
-};
 
 
 struct motor_axis {
@@ -103,6 +97,7 @@ void print_data(CAN_message_t rxMsg, int motorid);
 
 // =============== MOTOR CONTROL FUNCTION DEFINITIONS ================================
 void enter_MIT_control_mode();
+void motor_enter_MIT_control_mode(motor_axis *axis);
 void exit_MIT_control_mode();
 void setup_motor(motor_axis *axis, uint8_t id, int dir);
 void set_position(motor_axis *axis, float pos_rad, float kp, float kd);
@@ -118,6 +113,8 @@ void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd);
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold);
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3);
+
+void set_torque(motor_axis *axis, float torque);
 
 float generate_sine_wave(motor_axis *axis, float amplitude, float angular_frequency);
 angles generate_step_response(angles a, angles b, float freq);
