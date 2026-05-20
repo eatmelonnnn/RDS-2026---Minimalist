@@ -401,7 +401,7 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
     }
     
   if (!LOGGING) {Serial.println("Calibrating MCP");}
-  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.3f);
+  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.7f);
   calibration_offsets[1] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_2, motor_pos_2, rj, Rm2);
   motor_on[1] = true;
    start = millis();

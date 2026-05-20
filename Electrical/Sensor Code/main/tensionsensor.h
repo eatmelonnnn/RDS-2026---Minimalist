@@ -10,7 +10,8 @@
 #define PIN_MOSI 26
 #define PIN_MISO 39
 #define PIN_SCK 27
-#define PIN_DRDY 29
+#define PIN_DRDY_DIP 29
+#define PIN_DRDY_MCP 9
 
 // ---------- ADS1220 commands ----------
 #define CMD_RESET 0x06
@@ -23,7 +24,7 @@
 // Update countsPerUnit if you recalibrate with the calibration tool.
 // const float countsPerUnit =  3116.4614f;
 // const float countsPerUnit =  2886.4956;
-#define countsPerUnit 2418.9988
+#define countsPerUnit 4157.5907
 
 // ---------- DRDY timeout ----------
 #define DRDY_TIMEOUT_MS 500
