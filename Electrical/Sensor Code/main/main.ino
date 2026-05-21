@@ -9,8 +9,10 @@ k mcp_control = {1, 0, 0};
 
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
-angles poseA = {0.0f, PI/2, 0.0f};
-angles poseB = {0.0, 0.0f, PI/2};
+angles poseA = {0.0f, PI/3, 0.0f};
+angles poseB = {0.0, 0.0f, PI/3};
+// angles poseA = {0.0f, 0.0f, 0.0f};
+// angles poseB = {0.0, 0.0f, 0.0f};
 float pos1_unwrapped = 0;
 float pos2_unwrapped = 0;
 float pos3_unwrapped = 0;
@@ -21,7 +23,7 @@ motor_axis motor3;
 
 float tension_offset_dip  = 0.0;
 
-float calibration_hardstops[3] = {0.7, -0.5, 0.57};
+float calibration_hardstops[3] = {0.46, -1.01, 0.94};
 
 void setup() {
   // put your setup code here, to run once:
