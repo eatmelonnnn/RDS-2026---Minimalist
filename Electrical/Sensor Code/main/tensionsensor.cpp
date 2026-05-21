@@ -39,15 +39,15 @@ void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS) {
 
 finger_tensions_torques generate_step_tensions() {
   finger_tensions_torques t;
-  t.mcp_tension = 150;
-  t.dip_tension = 150;
-  t.mcp_torque = 0.5;
+  t.mcp_tension = 235;
+  t.dip_tension = 145;
+  t.mcp_torque = 1.04;
   t.dip_torque = 0.5;
   return t;
 }
 
 // ---------- DRDY wait ----------
-bool waitForDRDY(uint8_t PIN_DRDY) {
+bool waitForDRDY() {
   uint32_t t0 = millis();
   while (digitalRead(PIN_DRDY) == HIGH) {
     if (millis() - t0 > DRDY_TIMEOUT_MS) {
@@ -59,8 +59,8 @@ bool waitForDRDY(uint8_t PIN_DRDY) {
 }
 
 // ---------- Read one fresh conversion ----------
-int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN) {
-  if (!waitForDRDY(DRDY_PIN)) return 0;
+int32_t readData(uint8_t PIN_CS) {
+  if (!waitForDRDY()) return 0;
   SPI1.beginTransaction(adsSPI);
   csLow(PIN_CS);
   uint8_t b2 = SPI1.transfer(0x00);
@@ -75,12 +75,12 @@ int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN) {
 
 void isr_dip() {
   is_dip = true;
-  update_sensor_readings(PIN_CS_DIP, zero_offset_dip, PIN_DRDY_DIP);
+  update_sensor_readings(PIN_CS_DIP, zero_offset_dip);
 }
 
 void isr_mcp() {
   is_dip = false;
-  update_sensor_readings(PIN_CS_MCP, zero_offset_mcp,  PIN_DRDY_MCP);
+  update_sensor_readings(PIN_CS_MCP, zero_offset_mcp);
 }
 
 float get_dip_tension() {
@@ -109,8 +109,8 @@ float pid_correction(float actual, float desired, float* prev_error, float *i_er
 }
 
 
-void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY) {
-  int32_t raw = readData(PIN_CS,  PIN_DRDY);
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset) {
+  int32_t raw = readData(PIN_CS);
   float tension = (raw - zeroOffset) / countsPerUnit;
   if (is_dip) {
     tension_dip = tension;
@@ -121,19 +121,18 @@ void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRD
 }
 
 // ---------- Average N fresh conversions ----------
-int32_t averageRaw(uint16_t samples,uint8_t PIN_CS,uint8_t PIN_DRDY) {
+int32_t averageRaw(uint16_t samples,uint8_t PIN_CS) {
   int64_t sum = 0;
   for (uint16_t i = 0; i < samples; i++) {
-    sum += readData(PIN_CS, PIN_DRDY);
+    sum += readData(PIN_CS);
   }
   return (float)sum / (float)samples;
 }
 
-
 void zero_sensors() {
-  zero_offset_mcp = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_MCP,  PIN_DRDY_MCP);
+  zero_offset_mcp = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_MCP);
   Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_mcp);
-  zero_offset_dip = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_DIP, PIN_DRDY_DIP);
+  zero_offset_dip = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_DIP);
   Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_dip);
 }
 
@@ -149,7 +148,7 @@ void adsInit(uint8_t PIN_CS) {
   delay(100);
 }
 
-void cs_setup(uint8_t PIN_CS, uint8_t PIN_DRDY){
+void cs_setup(uint8_t PIN_CS){
     pinMode(PIN_CS, OUTPUT);
     pinMode(PIN_DRDY, INPUT);
     digitalWriteFast(PIN_CS, HIGH);

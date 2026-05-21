@@ -118,11 +118,6 @@ void enter_MIT_control_mode(){
 
 }
 
-void motor_enter_MIT_control_mode(motor_axis *axis) {
-    uint8_t bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD};
-    comm_can_transmit_sid(axis->controller_id, bytes, 8,0);
-}
-
 void exit_MIT_control_mode() {
     uint8_t bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD};
     comm_can_transmit_sid(MOTOR1_ID, bytes, 8,0);
@@ -427,7 +422,7 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
     }
     
   if (!LOGGING) {Serial.println("Calibrating MCP");}
-  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.7f);
+  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.3f);
   calibration_offsets[1] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_2, motor_pos_2, rj, Rm2);
   motor_on[1] = true;
    start = millis();
