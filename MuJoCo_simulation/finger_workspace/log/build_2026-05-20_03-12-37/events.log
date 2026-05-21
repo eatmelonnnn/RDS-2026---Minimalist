@@ -1,0 +1,286 @@
+[0.000000] (-) TimerEvent: {}
+[0.004392] (finger_description) JobQueued: {'identifier': 'finger_description', 'dependencies': OrderedDict()}
+[0.005788] (finger_description) JobStarted: {'identifier': 'finger_description'}
+[0.094602] (-) TimerEvent: {}
+[0.195986] (-) TimerEvent: {}
+[0.210049] (finger_description) JobProgress: {'identifier': 'finger_description', 'progress': 'cmake'}
+[0.296190] (-) TimerEvent: {}
+[0.397596] (-) TimerEvent: {}
+[0.498909] (-) TimerEvent: {}
+[0.603081] (-) TimerEvent: {}
+[0.665911] (finger_description) Command: {'cmd': ['/usr/bin/cmake', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src/finger_description', '-DCMAKE_INSTALL_PREFIX=/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description'], 'cwd': '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'root'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{c4907e99-7ef9-53f6-bd3e-108e3540fd5b}'), ('MOTD_SHOWN', 'update-motd'), ('HOME', '/root'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src'), ('ROS_PYTHON_VERSION', '3'), ('PS1', '(mujoco_env) \\[\\e]0;\\u@\\h: \\w\\a\\]${debian_chroot:+($debian_chroot)}\\u@\\h:\\w\\$'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/0/bus'), ('_CE_M', ''), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('DEBUGINFOD_URLS', ''), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'root'), ('NAME', 'DESKTOP-LVRRDPC'), ('WSL_INTEROP', '/run/WSL/474_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/mujoco_env/bin:/opt/ros/humble/bin:/root/anaconda3/condabin:/usr/local/cuda-12.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64:/mnt/c/MinGW/bin:/mnt/c/MinGW/msys/1.0/bin:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Amazon/AWSCLIV2/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Nordic Semiconductor/nrf-command-line-tools/bin/:/mnt/c/Users/ineza/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/ineza/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/ineza/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/ineza/.dotnet/tools:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Users/ineza/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0/LocalCache/local-packages/Python311/Scripts:/mnt/c/Users/ineza/AppData/Roaming/npm:/mnt/c/Users/ineza/AppData/Local/Microsoft/WinGet/Packages/NordicSemiconductor.nrfutil_Microsoft.Winget.Source_8wekyb3d8bbwe:/snap/bin'), ('WT_SESSION', 'bcc88482-4898-4087-ad15-65caa20532d5'), ('XDG_RUNTIME_DIR', '/run/user/0/'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('VIRTUAL_ENV_PROMPT', '(mujoco_env)'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/root/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('VIRTUAL_ENV', '/mujoco_env'), ('PWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description'), ('CONDA_EXE', '/root/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.776235] (-) TimerEvent: {}
+[0.877746] (-) TimerEvent: {}
+[0.978950] (-) TimerEvent: {}
+[1.080171] (-) TimerEvent: {}
+[1.181390] (-) TimerEvent: {}
+[1.282547] (-) TimerEvent: {}
+[1.384476] (-) TimerEvent: {}
+[1.485581] (-) TimerEvent: {}
+[1.587007] (-) TimerEvent: {}
+[1.688313] (-) TimerEvent: {}
+[1.789623] (-) TimerEvent: {}
+[1.891854] (-) TimerEvent: {}
+[1.993080] (-) TimerEvent: {}
+[2.094447] (-) TimerEvent: {}
+[2.195800] (-) TimerEvent: {}
+[2.297128] (-) TimerEvent: {}
+[2.398345] (-) TimerEvent: {}
+[2.499540] (-) TimerEvent: {}
+[2.600725] (-) TimerEvent: {}
+[2.701981] (-) TimerEvent: {}
+[2.803103] (-) TimerEvent: {}
+[2.904174] (-) TimerEvent: {}
+[2.923566] (finger_description) StdoutLine: {'line': b'-- The C compiler identification is GNU 11.4.0\n'}
+[3.004440] (-) TimerEvent: {}
+[3.106126] (-) TimerEvent: {}
+[3.207751] (-) TimerEvent: {}
+[3.309187] (-) TimerEvent: {}
+[3.410725] (-) TimerEvent: {}
+[3.512222] (-) TimerEvent: {}
+[3.613620] (-) TimerEvent: {}
+[3.715045] (-) TimerEvent: {}
+[3.817227] (-) TimerEvent: {}
+[3.918616] (-) TimerEvent: {}
+[4.020035] (-) TimerEvent: {}
+[4.122242] (-) TimerEvent: {}
+[4.223974] (-) TimerEvent: {}
+[4.325664] (-) TimerEvent: {}
+[4.427292] (-) TimerEvent: {}
+[4.529103] (-) TimerEvent: {}
+[4.630730] (-) TimerEvent: {}
+[4.732343] (-) TimerEvent: {}
+[4.834219] (-) TimerEvent: {}
+[4.936544] (-) TimerEvent: {}
+[5.038722] (-) TimerEvent: {}
+[5.141310] (-) TimerEvent: {}
+[5.243859] (-) TimerEvent: {}
+[5.346559] (-) TimerEvent: {}
+[5.448941] (-) TimerEvent: {}
+[5.551672] (-) TimerEvent: {}
+[5.654574] (-) TimerEvent: {}
+[5.757111] (-) TimerEvent: {}
+[5.859999] (-) TimerEvent: {}
+[5.962177] (-) TimerEvent: {}
+[6.064396] (-) TimerEvent: {}
+[6.166995] (-) TimerEvent: {}
+[6.269330] (-) TimerEvent: {}
+[6.372526] (-) TimerEvent: {}
+[6.475183] (-) TimerEvent: {}
+[6.577789] (-) TimerEvent: {}
+[6.680182] (-) TimerEvent: {}
+[6.783074] (-) TimerEvent: {}
+[6.885787] (-) TimerEvent: {}
+[6.988579] (-) TimerEvent: {}
+[7.090924] (-) TimerEvent: {}
+[7.193436] (-) TimerEvent: {}
+[7.295696] (-) TimerEvent: {}
+[7.398442] (-) TimerEvent: {}
+[7.500675] (-) TimerEvent: {}
+[7.555595] (finger_description) StdoutLine: {'line': b'-- The CXX compiler identification is GNU 11.4.0\n'}
+[7.601089] (-) TimerEvent: {}
+[7.703726] (-) TimerEvent: {}
+[7.806205] (-) TimerEvent: {}
+[7.908711] (-) TimerEvent: {}
+[8.011696] (-) TimerEvent: {}
+[8.113987] (-) TimerEvent: {}
+[8.217043] (-) TimerEvent: {}
+[8.319937] (-) TimerEvent: {}
+[8.422162] (-) TimerEvent: {}
+[8.524724] (-) TimerEvent: {}
+[8.627297] (-) TimerEvent: {}
+[8.730152] (-) TimerEvent: {}
+[8.832749] (-) TimerEvent: {}
+[8.935129] (-) TimerEvent: {}
+[9.037281] (-) TimerEvent: {}
+[9.141001] (-) TimerEvent: {}
+[9.243431] (-) TimerEvent: {}
+[9.345050] (-) TimerEvent: {}
+[9.446261] (-) TimerEvent: {}
+[9.547519] (-) TimerEvent: {}
+[9.648800] (-) TimerEvent: {}
+[9.749998] (-) TimerEvent: {}
+[9.851144] (-) TimerEvent: {}
+[9.950066] (finger_description) StdoutLine: {'line': b'-- Detecting C compiler ABI info\n'}
+[9.952618] (-) TimerEvent: {}
+[10.053944] (-) TimerEvent: {}
+[10.155485] (-) TimerEvent: {}
+[10.256568] (-) TimerEvent: {}
+[10.357932] (-) TimerEvent: {}
+[10.459972] (-) TimerEvent: {}
+[10.561520] (-) TimerEvent: {}
+[10.662949] (-) TimerEvent: {}
+[10.764505] (-) TimerEvent: {}
+[10.865941] (-) TimerEvent: {}
+[10.967468] (-) TimerEvent: {}
+[11.069112] (-) TimerEvent: {}
+[11.170760] (-) TimerEvent: {}
+[11.272115] (-) TimerEvent: {}
+[11.373449] (-) TimerEvent: {}
+[11.474920] (-) TimerEvent: {}
+[11.576631] (-) TimerEvent: {}
+[11.678933] (-) TimerEvent: {}
+[11.784704] (-) TimerEvent: {}
+[11.887134] (-) TimerEvent: {}
+[11.990236] (-) TimerEvent: {}
+[12.093106] (-) TimerEvent: {}
+[12.195531] (-) TimerEvent: {}
+[12.298027] (-) TimerEvent: {}
+[12.400478] (-) TimerEvent: {}
+[12.503159] (-) TimerEvent: {}
+[12.605314] (-) TimerEvent: {}
+[12.707499] (-) TimerEvent: {}
+[12.809974] (-) TimerEvent: {}
+[12.913673] (-) TimerEvent: {}
+[13.016616] (-) TimerEvent: {}
+[13.119175] (-) TimerEvent: {}
+[13.220337] (-) TimerEvent: {}
+[13.322046] (-) TimerEvent: {}
+[13.424594] (-) TimerEvent: {}
+[13.526997] (-) TimerEvent: {}
+[13.629258] (-) TimerEvent: {}
+[13.732129] (-) TimerEvent: {}
+[13.834623] (-) TimerEvent: {}
+[13.937171] (-) TimerEvent: {}
+[14.040635] (-) TimerEvent: {}
+[14.142880] (-) TimerEvent: {}
+[14.245560] (-) TimerEvent: {}
+[14.348442] (-) TimerEvent: {}
+[14.450729] (-) TimerEvent: {}
+[14.553494] (-) TimerEvent: {}
+[14.594869] (finger_description) StdoutLine: {'line': b'-- Detecting C compiler ABI info - done\n'}
+[14.653843] (-) TimerEvent: {}
+[14.756479] (-) TimerEvent: {}
+[14.859048] (-) TimerEvent: {}
+[14.931609] (finger_description) StdoutLine: {'line': b'-- Check for working C compiler: /usr/bin/cc - skipped\n'}
+[14.938748] (finger_description) StdoutLine: {'line': b'-- Detecting C compile features\n'}
+[14.944050] (finger_description) StdoutLine: {'line': b'-- Detecting C compile features - done\n'}
+[14.959503] (-) TimerEvent: {}
+[15.061881] (-) TimerEvent: {}
+[15.164612] (-) TimerEvent: {}
+[15.267124] (-) TimerEvent: {}
+[15.369352] (-) TimerEvent: {}
+[15.438026] (finger_description) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info\n'}
+[15.469769] (-) TimerEvent: {}
+[15.572092] (-) TimerEvent: {}
+[15.673907] (-) TimerEvent: {}
+[15.776117] (-) TimerEvent: {}
+[15.877782] (-) TimerEvent: {}
+[15.979489] (-) TimerEvent: {}
+[16.080997] (-) TimerEvent: {}
+[16.182529] (-) TimerEvent: {}
+[16.284276] (-) TimerEvent: {}
+[16.385822] (-) TimerEvent: {}
+[16.488316] (-) TimerEvent: {}
+[16.590678] (-) TimerEvent: {}
+[16.693218] (-) TimerEvent: {}
+[16.795955] (-) TimerEvent: {}
+[16.898726] (-) TimerEvent: {}
+[17.002591] (-) TimerEvent: {}
+[17.104373] (-) TimerEvent: {}
+[17.206522] (-) TimerEvent: {}
+[17.309131] (-) TimerEvent: {}
+[17.411388] (-) TimerEvent: {}
+[17.513611] (-) TimerEvent: {}
+[17.615767] (-) TimerEvent: {}
+[17.718076] (-) TimerEvent: {}
+[17.820777] (-) TimerEvent: {}
+[17.924239] (-) TimerEvent: {}
+[18.026647] (-) TimerEvent: {}
+[18.129843] (-) TimerEvent: {}
+[18.232350] (-) TimerEvent: {}
+[18.334554] (-) TimerEvent: {}
+[18.437180] (-) TimerEvent: {}
+[18.540277] (-) TimerEvent: {}
+[18.642676] (-) TimerEvent: {}
+[18.745231] (-) TimerEvent: {}
+[18.849770] (-) TimerEvent: {}
+[18.952364] (-) TimerEvent: {}
+[19.054650] (-) TimerEvent: {}
+[19.156964] (-) TimerEvent: {}
+[19.259698] (-) TimerEvent: {}
+[19.362201] (-) TimerEvent: {}
+[19.464523] (-) TimerEvent: {}
+[19.567011] (-) TimerEvent: {}
+[19.669363] (-) TimerEvent: {}
+[19.772206] (-) TimerEvent: {}
+[19.875606] (-) TimerEvent: {}
+[19.977883] (-) TimerEvent: {}
+[20.080782] (-) TimerEvent: {}
+[20.183475] (-) TimerEvent: {}
+[20.283020] (finger_description) StdoutLine: {'line': b'-- Detecting CXX compiler ABI info - done\n'}
+[20.286553] (-) TimerEvent: {}
+[20.387779] (-) TimerEvent: {}
+[20.428093] (finger_description) StdoutLine: {'line': b'-- Check for working CXX compiler: /usr/bin/c++ - skipped\n'}
+[20.430980] (finger_description) StdoutLine: {'line': b'-- Detecting CXX compile features\n'}
+[20.433394] (finger_description) StdoutLine: {'line': b'-- Detecting CXX compile features - done\n'}
+[20.487961] (-) TimerEvent: {}
+[20.589412] (-) TimerEvent: {}
+[20.691686] (-) TimerEvent: {}
+[20.795142] (-) TimerEvent: {}
+[20.838588] (finger_description) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.13 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[20.895367] (-) TimerEvent: {}
+[20.996714] (-) TimerEvent: {}
+[21.099164] (-) TimerEvent: {}
+[21.201737] (-) TimerEvent: {}
+[21.302919] (-) TimerEvent: {}
+[21.341642] (finger_description) StdoutLine: {'line': b'-- Found Python3: /mujoco_env/bin/python3 (found version "3.10.12") found components: Interpreter \n'}
+[21.403121] (-) TimerEvent: {}
+[21.504350] (-) TimerEvent: {}
+[21.606423] (-) TimerEvent: {}
+[21.709544] (-) TimerEvent: {}
+[21.811436] (-) TimerEvent: {}
+[21.912922] (-) TimerEvent: {}
+[22.014374] (-) TimerEvent: {}
+[22.116872] (-) TimerEvent: {}
+[22.218027] (-) TimerEvent: {}
+[22.319395] (-) TimerEvent: {}
+[22.420709] (-) TimerEvent: {}
+[22.522965] (-) TimerEvent: {}
+[22.625223] (-) TimerEvent: {}
+[22.709495] (finger_description) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.15 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[22.725385] (-) TimerEvent: {}
+[22.827092] (-) TimerEvent: {}
+[22.929307] (-) TimerEvent: {}
+[23.032649] (-) TimerEvent: {}
+[23.134827] (-) TimerEvent: {}
+[23.237614] (-) TimerEvent: {}
+[23.340581] (-) TimerEvent: {}
+[23.380035] (finger_description) StderrLine: {'line': b'Traceback (most recent call last):\n'}
+[23.387024] (finger_description) StderrLine: {'line': b'  File "/opt/ros/humble/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py", line 22, in <module>\n'}
+[23.392508] (finger_description) StderrLine: {'line': b'    from catkin_pkg.package import parse_package_string\n'}
+[23.397646] (finger_description) StderrLine: {'line': b"ModuleNotFoundError: No module named 'catkin_pkg'\n"}
+[23.403645] (finger_description) StderrLine: {'line': b'\x1b[31mCMake Error at /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:95 (message):\n'}
+[23.409419] (finger_description) StderrLine: {'line': b'  execute_process(/mujoco_env/bin/python3\n'}
+[23.415284] (finger_description) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/package_xml_2_cmake.py\n'}
+[23.421065] (finger_description) StderrLine: {'line': b'  /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src/finger_description/package.xml\n'}
+[23.426406] (finger_description) StderrLine: {'line': b'  /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/ament_cmake_core/package.cmake)\n'}
+[23.434265] (finger_description) StderrLine: {'line': b'  returned error code 1\n'}
+[23.441799] (-) TimerEvent: {}
+[23.443978] (finger_description) StderrLine: {'line': b'Call Stack (most recent call first):\n'}
+[23.451937] (finger_description) StderrLine: {'line': b'  /opt/ros/humble/share/ament_cmake_core/cmake/core/ament_package_xml.cmake:49 (_ament_package_xml)\n'}
+[23.457645] (finger_description) StderrLine: {'line': b'  /opt/ros/humble/share/ament_lint_auto/cmake/ament_lint_auto_find_test_dependencies.cmake:31 (ament_package_xml)\n'}
+[23.463680] (finger_description) StderrLine: {'line': b'  CMakeLists.txt:23 (ament_lint_auto_find_test_dependencies)\n'}
+[23.469543] (finger_description) StderrLine: {'line': b'\n'}
+[23.475545] (finger_description) StderrLine: {'line': b'\x1b[0m\n'}
+[23.481386] (finger_description) StdoutLine: {'line': b'-- Configuring incomplete, errors occurred!\n'}
+[23.487248] (finger_description) StdoutLine: {'line': b'See also "/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description/CMakeFiles/CMakeOutput.log".\n'}
+[23.542253] (-) TimerEvent: {}
+[23.618599] (finger_description) CommandEnded: {'returncode': 1}
+[23.643564] (-) TimerEvent: {}
+[23.746137] (-) TimerEvent: {}
+[23.851106] (-) TimerEvent: {}
+[23.954860] (-) TimerEvent: {}
+[24.057295] (-) TimerEvent: {}
+[24.160563] (-) TimerEvent: {}
+[24.263113] (-) TimerEvent: {}
+[24.365662] (-) TimerEvent: {}
+[24.468587] (-) TimerEvent: {}
+[24.570679] (-) TimerEvent: {}
+[24.672727] (-) TimerEvent: {}
+[24.773778] (-) TimerEvent: {}
+[24.874847] (-) TimerEvent: {}
+[24.976145] (-) TimerEvent: {}
+[25.078253] (finger_description) JobEnded: {'identifier': 'finger_description', 'rc': 1}
+[25.328534] (-) TimerEvent: {}
+[25.330119] (-) EventReactorShutdown: {}

@@ -10,7 +10,8 @@
 #define PIN_MOSI 26
 #define PIN_MISO 39
 #define PIN_SCK 27
-#define PIN_DRDY 29
+#define PIN_DRDY_DIP 29
+#define PIN_DRDY_MCP 9
 
 // ---------- ADS1220 commands ----------
 #define CMD_RESET 0x06
@@ -23,7 +24,7 @@
 // Update countsPerUnit if you recalibrate with the calibration tool.
 // const float countsPerUnit =  3116.4614f;
 // const float countsPerUnit =  2886.4956;
-#define countsPerUnit 2418.9988
+#define countsPerUnit 4157.5907
 
 // ---------- DRDY timeout ----------
 #define DRDY_TIMEOUT_MS 500
@@ -56,24 +57,24 @@ void sendCmd(uint8_t cmd, uint8_t PIN_CS);
 
 void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS);
 
-void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset);
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY);
 void isr_dip();
 void isr_mcp();
 
 
 // ---------- DRDY wait ----------
-bool waitForDRDY();
+bool waitForDRDY(uint8_t PIN_DRDY);
 
 // ---------- Read one fresh conversion ----------
-int32_t readData(uint8_t PIN_CS);
+int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN);
 
 // ---------- Average N fresh conversions ----------
-int32_t averageRaw(uint16_t samples,uint8_t PIN_CS);
+int32_t averageRaw(uint16_t samples,uint8_t PIN_CS,uint8_t PIN_DRDY);
 
 // ---------- ADS1220 init ----------
 void adsInit(uint8_t PIN_CS);
 
-void cs_setup(uint8_t PIN_CS);
+void cs_setup(uint8_t PIN_CS, uint8_t PIN_DRDY);
 
 
 void spi_setup();
