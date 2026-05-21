@@ -1,0 +1,33 @@
+[0.712s] Invoking command in '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ /usr/bin/cmake --build /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description -- -j8 -l8
+[1.693s] Invoked command in '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ /usr/bin/cmake --build /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description -- -j8 -l8
+[1.891s] Invoking command in '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ /usr/bin/cmake --install /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description
+[2.035s] -- Install configuration: ""
+[2.068s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf
+[2.160s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/Full assembly_visual_urdf_export.csv
+[2.224s] -- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/finger.urdf
+[2.654s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes
+[2.930s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/base_link.STL
+[3.150s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/mcp_link.STL
+[3.351s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/pip_link.STL
+[3.561s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/splay_link.STL
+[3.704s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch
+[3.960s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/display.launch
+[4.149s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/gazebo.launch
+[4.308s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config
+[4.492s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config/joint_names_Full assembly_visual_urdf_export.yaml
+[4.664s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/package_run_dependencies/finger_description
+[4.847s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/parent_prefix_path/finger_description
+[4.942s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.sh
+[5.054s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.dsv
+[5.137s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.sh
+[5.263s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.dsv
+[5.369s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.bash
+[5.493s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.sh
+[5.597s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.zsh
+[5.683s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.dsv
+[5.790s] -- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.dsv
+[6.186s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/packages/finger_description
+[6.316s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig.cmake
+[6.413s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig-version.cmake
+[6.531s] -- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.xml
+[6.621s] Invoked command in '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/humble PS1=\[\e]0;\u@\h: \w\a\]${debian_chroot:+($debian_chroot)}\u@\h:\w\$ /usr/bin/cmake --install /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description

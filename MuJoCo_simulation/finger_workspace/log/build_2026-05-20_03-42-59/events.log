@@ -1,0 +1,142 @@
+[0.000000] (-) TimerEvent: {}
+[0.013275] (finger_description) JobQueued: {'identifier': 'finger_description', 'dependencies': OrderedDict()}
+[0.014379] (finger_description) JobStarted: {'identifier': 'finger_description'}
+[0.093431] (-) TimerEvent: {}
+[0.197491] (-) TimerEvent: {}
+[0.298820] (-) TimerEvent: {}
+[0.400238] (-) TimerEvent: {}
+[0.402020] (finger_description) JobProgress: {'identifier': 'finger_description', 'progress': 'cmake'}
+[0.500446] (-) TimerEvent: {}
+[0.584957] (finger_description) JobProgress: {'identifier': 'finger_description', 'progress': 'build'}
+[0.600655] (-) TimerEvent: {}
+[0.607340] (finger_description) Command: {'cmd': ['/usr/bin/cmake', '--build', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description', '--', '-j8', '-l8'], 'cwd': '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'root'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{c4907e99-7ef9-53f6-bd3e-108e3540fd5b}'), ('MOTD_SHOWN', 'update-motd'), ('HOME', '/root'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src'), ('ROS_PYTHON_VERSION', '3'), ('PS1', '\\[\\e]0;\\u@\\h: \\w\\a\\]${debian_chroot:+($debian_chroot)}\\u@\\h:\\w\\$'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/0/bus'), ('_CE_M', ''), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('DEBUGINFOD_URLS', ''), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'root'), ('NAME', 'DESKTOP-LVRRDPC'), ('WSL_INTEROP', '/run/WSL/474_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/root/anaconda3/condabin:/usr/local/cuda-12.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64:/mnt/c/MinGW/bin:/mnt/c/MinGW/msys/1.0/bin:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Amazon/AWSCLIV2/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Nordic Semiconductor/nrf-command-line-tools/bin/:/mnt/c/Users/ineza/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/ineza/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/ineza/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/ineza/.dotnet/tools:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Users/ineza/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0/LocalCache/local-packages/Python311/Scripts:/mnt/c/Users/ineza/AppData/Roaming/npm:/mnt/c/Users/ineza/AppData/Local/Microsoft/WinGet/Packages/NordicSemiconductor.nrfutil_Microsoft.Winget.Source_8wekyb3d8bbwe:/snap/bin'), ('WT_SESSION', 'bcc88482-4898-4087-ad15-65caa20532d5'), ('XDG_RUNTIME_DIR', '/run/user/0/'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description:/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/root/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description'), ('CONDA_EXE', '/root/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('CMAKE_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description:/opt/ros/humble'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:')]), 'shell': False}
+[0.730200] (-) TimerEvent: {}
+[0.831796] (-) TimerEvent: {}
+[0.933440] (-) TimerEvent: {}
+[1.035855] (-) TimerEvent: {}
+[1.138571] (-) TimerEvent: {}
+[1.240833] (-) TimerEvent: {}
+[1.342769] (-) TimerEvent: {}
+[1.444996] (-) TimerEvent: {}
+[1.547263] (-) TimerEvent: {}
+[1.651089] (-) TimerEvent: {}
+[1.707443] (finger_description) CommandEnded: {'returncode': 0}
+[1.751206] (-) TimerEvent: {}
+[1.822374] (finger_description) JobProgress: {'identifier': 'finger_description', 'progress': 'install'}
+[1.851734] (-) TimerEvent: {}
+[1.900565] (finger_description) Command: {'cmd': ['/usr/bin/cmake', '--install', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description'], 'cwd': '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'root'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{c4907e99-7ef9-53f6-bd3e-108e3540fd5b}'), ('MOTD_SHOWN', 'update-motd'), ('HOME', '/root'), ('CONDA_SHLVL', '0'), ('OLDPWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src'), ('ROS_PYTHON_VERSION', '3'), ('PS1', '\\[\\e]0;\\u@\\h: \\w\\a\\]${debian_chroot:+($debian_chroot)}\\u@\\h:\\w\\$'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/0/bus'), ('_CE_M', ''), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('DEBUGINFOD_URLS', ''), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'root'), ('NAME', 'DESKTOP-LVRRDPC'), ('WSL_INTEROP', '/run/WSL/474_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('_CE_CONDA', ''), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/opt/ros/humble/bin:/root/anaconda3/condabin:/usr/local/cuda-12.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files (x86)/Windows Kits/8.1/Windows Performance Toolkit/:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.29.30133/bin/HostX64/x64:/mnt/c/MinGW/bin:/mnt/c/MinGW/msys/1.0/bin:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/Program Files/Amazon/AWSCLIV2/:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files/nodejs/:/mnt/c/Program Files/Nordic Semiconductor/nrf-command-line-tools/bin/:/mnt/c/Users/ineza/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/ineza/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/ineza/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/ineza/.dotnet/tools:/mnt/c/Program Files/ffmpeg/bin:/mnt/c/Users/ineza/AppData/Local/Packages/PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0/LocalCache/local-packages/Python311/Scripts:/mnt/c/Users/ineza/AppData/Roaming/npm:/mnt/c/Users/ineza/AppData/Local/Microsoft/WinGet/Packages/NordicSemiconductor.nrfutil_Microsoft.Winget.Source_8wekyb3d8bbwe:/snap/bin'), ('WT_SESSION', 'bcc88482-4898-4087-ad15-65caa20532d5'), ('XDG_RUNTIME_DIR', '/run/user/0/'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description:/opt/ros/humble'), ('CONDA_PYTHON_EXE', '/root/anaconda3/bin/python'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/build/finger_description'), ('CONDA_EXE', '/root/anaconda3/bin/conda'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('CMAKE_PREFIX_PATH', '/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description:/opt/ros/humble'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:')]), 'shell': False}
+[1.951921] (-) TimerEvent: {}
+[2.048400] (finger_description) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[2.052043] (-) TimerEvent: {}
+[2.081861] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf\n'}
+[2.152182] (-) TimerEvent: {}
+[2.173947] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/Full assembly_visual_urdf_export.csv\n'}
+[2.238177] (finger_description) StdoutLine: {'line': b'-- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/urdf/finger.urdf\n'}
+[2.252515] (-) TimerEvent: {}
+[2.353758] (-) TimerEvent: {}
+[2.455121] (-) TimerEvent: {}
+[2.557370] (-) TimerEvent: {}
+[2.661009] (-) TimerEvent: {}
+[2.664517] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes\n'}
+[2.761353] (-) TimerEvent: {}
+[2.863992] (-) TimerEvent: {}
+[2.939506] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/base_link.STL\n'}
+[2.964287] (-) TimerEvent: {}
+[3.067133] (-) TimerEvent: {}
+[3.160336] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/mcp_link.STL\n'}
+[3.167508] (-) TimerEvent: {}
+[3.270189] (-) TimerEvent: {}
+[3.362173] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/pip_link.STL\n'}
+[3.370499] (-) TimerEvent: {}
+[3.473250] (-) TimerEvent: {}
+[3.571089] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/meshes/splay_link.STL\n'}
+[3.578156] (-) TimerEvent: {}
+[3.680583] (-) TimerEvent: {}
+[3.715089] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch\n'}
+[3.780882] (-) TimerEvent: {}
+[3.883706] (-) TimerEvent: {}
+[3.971467] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/display.launch\n'}
+[3.983945] (-) TimerEvent: {}
+[4.086711] (-) TimerEvent: {}
+[4.159818] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/launch/gazebo.launch\n'}
+[4.187126] (-) TimerEvent: {}
+[4.289141] (-) TimerEvent: {}
+[4.316170] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config\n'}
+[4.389368] (-) TimerEvent: {}
+[4.491024] (-) TimerEvent: {}
+[4.505440] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/config/joint_names_Full assembly_visual_urdf_export.yaml\n'}
+[4.591231] (-) TimerEvent: {}
+[4.676986] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/package_run_dependencies/finger_description\n'}
+[4.691493] (-) TimerEvent: {}
+[4.793057] (-) TimerEvent: {}
+[4.859852] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/parent_prefix_path/finger_description\n'}
+[4.893311] (-) TimerEvent: {}
+[4.954384] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.sh\n'}
+[4.993684] (-) TimerEvent: {}
+[5.066753] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/ament_prefix_path.dsv\n'}
+[5.093933] (-) TimerEvent: {}
+[5.150215] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.sh\n'}
+[5.194257] (-) TimerEvent: {}
+[5.276496] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/environment/path.dsv\n'}
+[5.294461] (-) TimerEvent: {}
+[5.382147] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.bash\n'}
+[5.394802] (-) TimerEvent: {}
+[5.496657] (-) TimerEvent: {}
+[5.504753] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.sh\n'}
+[5.596783] (-) TimerEvent: {}
+[5.610769] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.zsh\n'}
+[5.694748] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/local_setup.dsv\n'}
+[5.699822] (-) TimerEvent: {}
+[5.802619] (finger_description) StdoutLine: {'line': b'-- Installing: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.dsv\n'}
+[5.806627] (-) TimerEvent: {}
+[5.908565] (-) TimerEvent: {}
+[6.010148] (-) TimerEvent: {}
+[6.111751] (-) TimerEvent: {}
+[6.198870] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/ament_index/resource_index/packages/finger_description\n'}
+[6.211995] (-) TimerEvent: {}
+[6.313285] (-) TimerEvent: {}
+[6.328722] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig.cmake\n'}
+[6.413651] (-) TimerEvent: {}
+[6.425343] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/cmake/finger_descriptionConfig-version.cmake\n'}
+[6.513823] (-) TimerEvent: {}
+[6.543705] (finger_description) StdoutLine: {'line': b'-- Up-to-date: /mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/install/finger_description/share/finger_description/package.xml\n'}
+[6.614186] (-) TimerEvent: {}
+[6.632342] (finger_description) CommandEnded: {'returncode': 0}
+[6.714331] (-) TimerEvent: {}
+[6.815947] (-) TimerEvent: {}
+[6.917509] (-) TimerEvent: {}
+[7.018899] (-) TimerEvent: {}
+[7.121279] (-) TimerEvent: {}
+[7.223722] (-) TimerEvent: {}
+[7.326532] (-) TimerEvent: {}
+[7.429446] (-) TimerEvent: {}
+[7.531902] (-) TimerEvent: {}
+[7.634720] (-) TimerEvent: {}
+[7.736939] (-) TimerEvent: {}
+[7.840315] (-) TimerEvent: {}
+[7.943113] (-) TimerEvent: {}
+[8.046496] (-) TimerEvent: {}
+[8.149712] (-) TimerEvent: {}
+[8.252425] (-) TimerEvent: {}
+[8.354771] (-) TimerEvent: {}
+[8.458440] (-) TimerEvent: {}
+[8.562209] (-) TimerEvent: {}
+[8.664890] (-) TimerEvent: {}
+[8.769260] (-) TimerEvent: {}
+[8.871425] (-) TimerEvent: {}
+[8.974537] (-) TimerEvent: {}
+[9.076509] (-) TimerEvent: {}
+[9.179278] (-) TimerEvent: {}
+[9.282689] (-) TimerEvent: {}
+[9.383861] (-) TimerEvent: {}
+[9.485078] (-) TimerEvent: {}
+[9.586299] (-) TimerEvent: {}
+[9.687428] (-) TimerEvent: {}
+[9.788646] (-) TimerEvent: {}
+[9.890099] (-) TimerEvent: {}
+[9.991338] (-) TimerEvent: {}
+[10.092306] (-) TimerEvent: {}
+[10.193667] (-) TimerEvent: {}
+[10.294969] (finger_description) JobEnded: {'identifier': 'finger_description', 'rc': 0}
+[10.545225] (-) TimerEvent: {}
+[10.547163] (-) EventReactorShutdown: {}
