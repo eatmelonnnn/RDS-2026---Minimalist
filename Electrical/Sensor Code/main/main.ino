@@ -1,16 +1,26 @@
 #include "motors.h"
 #include "tensionsensor.h"
+#include "trajectories.h"
 
 #define FINGER_POSITION_CONTROL_MODE 1
 
-k dip_control = {1, 0, 0};
+enum CONTROL_MODES {
+  STEP_POSITION,
+  POSITION_TRACKING,
+  FORCE_CONTROL,
+  CALIBRATION
+};
 
-k mcp_control = {1, 0, 0};
+
+k dip_control = {0.005, 0, 0};
+
+k mcp_control = {0.005, 0, 0};
 
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
-angles poseA = {-0.25f, 0.0, 0.0f};
-angles poseB = {0.25f, 0.0, 0.0};
+// Step position controlmode
+angles poseA = {0.0f, PI/4, 0.0f};
+angles poseB = {0.00f, 0.0, PI/4};
 float pos1_unwrapped = 0;
 float pos2_unwrapped = 0;
 float pos3_unwrapped = 0;
@@ -21,7 +31,7 @@ motor_axis motor3;
 
 float tension_offset_dip  = 0.0;
 
-float calibration_hardstops[3] = {0.79, 0.04, 2.3};
+float calibration_hardstops[3] = {0.50, -0.07, 0.40};
 
 void setup() {
   // put your setup code here, to run once:
@@ -38,16 +48,15 @@ void setup() {
 
   exit_MIT_control_mode();
   delay(1000);
-
-  if (FINGER_POSITION_CONTROL_MODE) {
-    enter_MIT_control_mode();
+  enter_MIT_control_mode();
     
-    if (!LOGGING) {Serial.println("Entered MIT mode");}
-    // set_position(&motor1, 2.5f, 8.0f, 0.5f);
-    // set_position(&motor2, 2.5f, 8.0f, 0.5f);
-    //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
-    delay(100);
-    if (!LOGGING) {Serial.println("Starting Calibration");}
+  if (!LOGGING) {Serial.println("Entered MIT mode");}
+  // set_position(&motor1, 2.5f, 8.0f, 0.5f);
+  // set_position(&motor2, 2.5f, 8.0f, 0.5f);
+  //  set_position(&motor3, 2*PI, 8.0f, 0.5f);  
+  delay(100);
+  if (FINGER_POSITION_CONTROL_MODE) {
+    // if (!LOGGING) {Serial.println("Starting Calibration");}
     
     /*
     full_calibration(calibration_hardstops, &motor1, &motor2, &motor3);
@@ -71,15 +80,25 @@ else {
     adsInit(PIN_CS_DIP);
     adsInit(PIN_CS_MCP);
     Serial.println("ADS initialize");
+
+    static uint32_t start_zero_time = 0;
+    while (millis() - start_zero_time < 1000) {
+      bool all_motors_zero[3] = {true, true, true};
+      angles zero_position = {0, 0, 0};
+      set_joint_position(&motor1, &motor2, &motor3,
+                        zero_position,
+                        calibration_hardstops,
+                        25.0f, 3.0f, all_motors_zero);
+    }
     zero_sensors();
-    exit_MIT_control_mode();
-    delay(1000);
-    motor_enter_MIT_control_mode(&motor1);
-    Serial.println("splay motor under position control");
-    attachInterrupt(digitalPinToInterrupt(PIN_CS_DIP), isr_dip, FALLING);
-    attachInterrupt(digitalPinToInterrupt(PIN_CS_MCP), isr_mcp, FALLING);
+    attachInterrupt(digitalPinToInterrupt(PIN_DRDY_DIP), isr_dip, FALLING);
+    attachInterrupt(digitalPinToInterrupt(PIN_DRDY_MCP), isr_mcp, FALLING);
+
+    
   }
 }
+
+
 
 float pos1 = 0, pos2 = 0, pos3 = 0;
 float jtarget1 = 0, jtarget2 = 0, jtarget3 = 0;
@@ -92,7 +111,8 @@ if (FINGER_POSITION_CONTROL_MODE) {
     static uint32_t lastCmd = 0;
     if (millis() - lastCmd >= 10) {  
 
-        target_joint = generate_step_response(poseA, poseB, 2.0f); // 0.5 Hz
+        // target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
+        target_joint = generate_ellipse(0.5f);
         bool motor_on[3] = {true, true, true};
         // Send to motors
         set_joint_position(&motor1, &motor2, &motor3,
@@ -167,35 +187,6 @@ if (FINGER_POSITION_CONTROL_MODE) {
     }
 }
 else {
-  // TODO: actual loop
-  
-  static bool initial_loop_mcp = true;
-  static bool initial_loop_dip = true;
-  static float prev_error_mcp;
-  static float i_error_mcp = 0;
-  static float prev_error_dip;
-  static float i_error_dip = 0;
-  finger_tensions_torques desired = generate_step_tensions();
-  float torque_mcp = pid_correction(get_mcp_tension(),
-   desired.mcp_tension,
-    &prev_error_mcp,
-     &i_error_mcp,
-      mcp_control,
-       &initial_loop_mcp) + desired.mcp_torque;
-  set_torque(&motor2, torque_mcp);
-  float torque_dip = pid_correction(get_dip_tension(),
-   desired.dip_tension,
-    &prev_error_dip,
-     &i_error_dip,
-      dip_control,
-       &initial_loop_dip) + desired.dip_torque;
-  set_torque(&motor3, torque_dip);
-  bool splay_on[3] = {true, false, false};
-  angles zero_splay = {0.0, 0.0, 0.0};
-  set_joint_position(&motor1, &motor2, &motor3,
-                        zero_splay,
-                        calibration_hardstops,
-                        25.0f, 3.0f, splay_on);
-
+  set_fingertip_force_zero(&motor1,&motor2,&motor3,4, 25.0, 3.0, mcp_control,dip_control,calibration_hardstops);
 }
 }
