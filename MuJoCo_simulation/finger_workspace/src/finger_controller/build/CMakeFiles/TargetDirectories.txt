@@ -1,0 +1,3 @@
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src/finger_controller/build/CMakeFiles/finger_controller.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src/finger_controller/build/CMakeFiles/edit_cache.dir
+/mnt/d/RDS-repo/RDS-2026---Minimalist/MuJoCo_simulation/finger_workspace/src/finger_controller/build/CMakeFiles/rebuild_cache.dir

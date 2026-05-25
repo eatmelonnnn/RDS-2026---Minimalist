@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/finger_controller.dir/finger_controller.cpp.o CMakeFiles/finger_controller.dir/kinematics.cpp.o -o finger_controller   -L/root/mujoco_cpp_lib/lib  -Wl,-rpath,/root/mujoco_cpp_lib/lib -lmujoco /usr/lib/x86_64-linux-gnu/libglfw.so.3.3 -lGL -ldl -lpthread 

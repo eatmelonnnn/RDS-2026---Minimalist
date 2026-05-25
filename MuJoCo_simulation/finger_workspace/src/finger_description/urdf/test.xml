@@ -1,0 +1,9 @@
+<mujoco model="pendulum_test">
+    <worldbody>
+        <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 1"/>
+    <geom type="plane" size="1 1 0.1" rgba=".9 0 0 1"/>
+    <body pos="0 0 2" euler="0 180 0">
+        <joint name=
+    </worldbody>
+
+</mujoco>
