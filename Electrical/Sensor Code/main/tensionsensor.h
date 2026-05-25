@@ -36,6 +36,15 @@
 #define INTERROR_MIN -100
 
 
+extern volatile bool is_dip;
+extern volatile bool is_mcp;
+
+extern volatile float tension_dip;
+extern volatile float tension_mcp;
+
+extern int32_t zero_offset_dip;
+extern int32_t zero_offset_mcp;
+
 struct finger_tensions_torques {
   float mcp_tension;
   float dip_tension;
@@ -57,7 +66,7 @@ void sendCmd(uint8_t cmd, uint8_t PIN_CS);
 
 void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS);
 
-void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY);
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY, volatile bool  *is_joint);
 void isr_dip();
 void isr_mcp();
 

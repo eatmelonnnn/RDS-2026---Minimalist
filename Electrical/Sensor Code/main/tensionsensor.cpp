@@ -6,11 +6,11 @@ SPISettings adsSPI(100'000, MSBFIRST, SPI_MODE1);
 volatile float tension_dip = 0.0f;
 volatile float tension_mcp = 0.0f;
 
-volatile bool is_dip = true;
+volatile bool is_dip = false;
+volatile bool is_mcp = false;
 
 int32_t zero_offset_dip = 0;
 int32_t zero_offset_mcp = 0;
-
 
 
 // ---------- SPI helpers ----------
@@ -39,10 +39,10 @@ void writeReg(uint8_t reg, uint8_t val, uint8_t PIN_CS) {
 
 finger_tensions_torques generate_step_tensions() {
   finger_tensions_torques t;
-  t.mcp_tension = 150;
-  t.dip_tension = 150;
-  t.mcp_torque = 0.5;
-  t.dip_torque = 0.5;
+  t.mcp_tension = 20;
+  t.dip_tension = 20;
+  t.mcp_torque = 0.3;
+  t.dip_torque = 0.3;
   return t;
 }
 
@@ -60,7 +60,7 @@ bool waitForDRDY(uint8_t PIN_DRDY) {
 
 // ---------- Read one fresh conversion ----------
 int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN) {
-  if (!waitForDRDY(DRDY_PIN)) return 0;
+  // if (!waitForDRDY(DRDY_PIN)) return 0;
   SPI1.beginTransaction(adsSPI);
   csLow(PIN_CS);
   uint8_t b2 = SPI1.transfer(0x00);
@@ -75,12 +75,10 @@ int32_t readData(uint8_t PIN_CS, uint8_t DRDY_PIN) {
 
 void isr_dip() {
   is_dip = true;
-  update_sensor_readings(PIN_CS_DIP, zero_offset_dip, PIN_DRDY_DIP);
 }
 
 void isr_mcp() {
-  is_dip = false;
-  update_sensor_readings(PIN_CS_MCP, zero_offset_mcp,  PIN_DRDY_MCP);
+  is_mcp = true;
 }
 
 float get_dip_tension() {
@@ -92,7 +90,7 @@ float get_mcp_tension() {
 }
 
 float pid_correction(float actual, float desired, float* prev_error, float *i_error, k pid, bool *initial_loop) {
-  float e = actual - desired;
+  float e = desired - actual;
   float d_error;
   if (*initial_loop) {
     d_error = 0;
@@ -101,22 +99,33 @@ float pid_correction(float actual, float desired, float* prev_error, float *i_er
   else {
     d_error = e-*prev_error;
   }
-  float correction = pid.p*e + pid.i*(*i_error) + pid.d*d_error;
   *i_error = constrain(*i_error + e, INTERROR_MIN, INTERROR_MAX);
+  float correction = pid.p*e + pid.i*(*i_error) + pid.d*d_error;
   *prev_error = e;
   return correction;
 
 }
 
 
-void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY) {
-  int32_t raw = readData(PIN_CS,  PIN_DRDY);
-  float tension = (raw - zeroOffset) / countsPerUnit;
-  if (is_dip) {
-    tension_dip = tension;
-  }
-  else {
-    tension_mcp = tension;
+void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRDY, volatile  bool*  is_joint) {
+  if (*is_joint) {
+    *is_joint = false;
+    int32_t raw = readData(PIN_CS,  PIN_DRDY);
+    float tension = (raw - zeroOffset) / countsPerUnit;
+    if (PIN_CS == PIN_CS_DIP) {
+      tension_dip = tension;
+      // Serial.print("New DIP tension: ");
+      // Serial.print(get_dip_tension());
+      // Serial.print(", ");
+      // Serial.print(tension_dip);
+    }
+    else {
+      tension_mcp = tension;
+      // Serial.print("New MCP tension: ");
+      // Serial.print(get_mcp_tension());
+      // Serial.print(", ");
+      // Serial.print(tension_mcp);
+    }
   }
 }
 
@@ -162,4 +171,3 @@ void spi_setup(){
     SPI1.begin();
     delay(50);
 }
-

@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdint.h>
 #include "kinematics.h"
+#include "tensionsensor.h"
 
 extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
@@ -20,8 +21,8 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define V_MAX  30.0f
 #define I_MIN -18.0f
 #define I_MAX  18.0f
-#define T_MIN -18.0f
-#define T_MAX  18.0f
+#define T_MIN -0.1f
+#define T_MAX  0.1f
 #define LOGGING true
 
 #define CAL_DELAY 1000
@@ -29,18 +30,6 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define NUM_CAL_CYCLES 2
 #define NUM_CAL_MEASURES_PER_CYCLE 3
 
-#define Rm1 0.005f
-#define Rm2 0.005f
-#define Rm3 0.005f
-
-
-#define rj 0.008f
-#define rw 0.010f
-#define rs (0.0191f/2.0f)
-
-#define HARDSTOP_JOINT_1 -0.349f //32645023f
-#define HARDSTOP_JOINT_2 -1.37079633f
-#define HARDSTOP_JOINT_3 1.97079633f
 
 #define CALIBRATION_VELOCITY -0.5f
 
@@ -103,9 +92,6 @@ void setup_motor(motor_axis *axis, uint8_t id, int dir);
 void set_position(motor_axis *axis, float pos_rad, float kp, float kd);
 
 float calibration_hardstops_zero_motors(float JOINT_HARDSTOP, float motor_position, float joint_radius, float motor_radius);
-tendonLengths multiply_AT(float th1, float th2, float th3);
-angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
-angles motor_pos_to_joint_pos(float pos1, float pos2, float pos3, float calibration_offsets[3]);
 float unwrap_angle(float current);
 void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
                         angles joint_pos, float calibration_offsets[3],
@@ -115,6 +101,17 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3);
 
 void set_torque(motor_axis *axis, float torque);
+
+void set_fingertip_force_zero(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float tip_force, 
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3]);
+
 
 float generate_sine_wave(motor_axis *axis, float amplitude, float angular_frequency);
 angles generate_step_response(angles a, angles b, float freq);

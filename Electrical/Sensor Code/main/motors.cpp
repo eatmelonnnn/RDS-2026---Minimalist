@@ -1,4 +1,14 @@
+
+
 #include "motors.h"
+
+bool initial_loop_mcp = true;
+bool initial_loop_dip = true;
+float prev_error_mcp;
+float i_error_mcp = 0;
+float prev_error_dip;
+float i_error_dip = 0;
+
 // CAN COMMUNICATION
 float float_to_uint(float x, float x_min, float x_max, int bits) {
     float span = x_max - x_min;
@@ -119,7 +129,7 @@ void enter_MIT_control_mode(){
 }
 
 void motor_enter_MIT_control_mode(motor_axis *axis) {
-    uint8_t bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFD};
+    uint8_t bytes[8] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC};
     comm_can_transmit_sid(axis->controller_id, bytes, 8,0);
 }
 
@@ -165,6 +175,50 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
+void set_fingertip_force_zero(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float tip_force, 
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3]){
+    
+    float tendon_m_torques[2];
+    float tendon_tensions[2];
+    // find torques andtensions
+    tip_zero_force_to_outputs(tip_force, tendon_tensions,tendon_m_torques);
+    
+  // Serial.println("MCP Tension Sensor Reading");
+  update_sensor_readings(PIN_CS_MCP, zero_offset_mcp,  PIN_DRDY_MCP, &is_mcp);
+  // Serial.println("DIP Tension Sensor Reading");
+  update_sensor_readings(PIN_CS_DIP, zero_offset_dip,  PIN_DRDY_DIP, &is_dip);
+//   finger_tensions_torques desired = generate_step_tensions();
+  float torque_mcp = pid_correction(get_mcp_tension(),
+   tendon_tensions[MCP],
+    &prev_error_mcp,
+     &i_error_mcp,
+      mcp_control,
+       &initial_loop_mcp) + tendon_m_torques[MCP];
+  // Serial.println(torque_mcp);
+  set_torque(motor2, torque_mcp);
+  float torque_dip = pid_correction(get_dip_tension(),
+   tendon_tensions[DIP],
+    &prev_error_dip,
+     &i_error_dip,
+      dip_control,
+       &initial_loop_dip) + tendon_m_torques[DIP];
+  set_torque(motor3, torque_dip);
+  bool splay_on[3] = {true, false, false};
+  angles zero_splay = {0.0, 0.0, 0.0};
+  set_joint_position(motor1, motor2, motor3,
+                        zero_splay,
+                        calibration_hardstops,
+                        splay_p, splay_d, splay_on);
+
+}
+
 void buffer_append_int32(uint8_t* buffer, int32_t number, int32_t *index) {
     buffer[(*index)++] = number >> 24;
     buffer[(*index)++] = number >> 16;
@@ -182,49 +236,35 @@ void set_current(motor_axis *axis, float current) {
 }
 
 void set_torque(motor_axis *axis, float torque) {
-    float current = torque / KT;
-    set_current(axis,current);
+    // float current = torque / KT;
+    // set_current(axis,current);
+    
+    // Clamp inputs to valid ranges
+    float actual_torque = constrain(torque, T_MIN, T_MAX);
+
+    // Convert to 16/12-bit unsigned ints
+    uint16_t pos_int = float_to_uint(0, P_MIN, P_MAX, 16);
+    uint16_t vel_int = float_to_uint(0.0f,    V_MIN, V_MAX, 12);  // zero velocity
+    uint16_t kp_int  = float_to_uint(0.0,      0.0f,  500.0f, 12);
+    uint16_t kd_int  = float_to_uint(0.0,      0.0f,  5.0f,   12);
+    uint16_t tor_int = float_to_uint(actual_torque,    T_MIN, T_MAX,  12);  
+
+    // Pack into 8 bytes — AK-series MIT mode format
+    uint8_t bytes[8];
+    bytes[0] = pos_int >> 8;
+    bytes[1] = pos_int & 0xFF;
+    bytes[2] = vel_int >> 4;
+    bytes[3] = ((vel_int & 0xF) << 4) | (kp_int >> 8);
+    bytes[4] = kp_int & 0xFF;
+    bytes[5] = kd_int >> 4;
+    bytes[6] = ((kd_int & 0xF) << 4) | (tor_int >> 8);
+    bytes[7] = tor_int & 0xFF;
+
+    comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
 float calibration_hardstops_zero_motors(float JOINT_HARDSTOP, float motor_position, float joint_radius, float motor_radius) {
     return motor_position - (JOINT_HARDSTOP*joint_radius/motor_radius);
-}
-
-tendonLengths multiply_AT(float th1, float th2, float th3) {
-    tendonLengths y;
-    y.l1 = -rw * th1 - rj * th2;
-    y.l2 = -rw * th1 - rj * th2 + rj * th3;
-
-    return y;
-}
-
-angles motor_pos_to_joint_pos(float pos1, float pos2, float pos3, float calibration_offsets[3]) {
-    angles j;
-    j.th1 = (pos1 - calibration_offsets[0])*Rm1/rs;
-    float tendon_1 = (pos2 - calibration_offsets[1])*Rm2;
-    j.th2 = -(tendon_1 + rw*j.th1)/rj;
-    float tendon_2 = (pos3 - calibration_offsets[2])*Rm3;
-    j.th3 = (tendon_2 + rw*j.th1 + rj*j.th2)/rj;
-
-    return j;
-
-}
-
-angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]) {
-  angles m;
-
-    float joint_angle_diff_1 = jointpos.th1;
-    float joint_angle_diff_2 =  jointpos.th2;
-    float joint_angle_diff_3 =  jointpos.th3;
-
-    tendonLengths tendon_diff =
-        multiply_AT(joint_angle_diff_1, joint_angle_diff_2, joint_angle_diff_3);
-
-    m.th2 = calibration_offsets[1] + tendon_diff.l1 / Rm2;
-    m.th3 = calibration_offsets[2] + tendon_diff.l2 / Rm3;
-    m.th1 = calibration_offsets[0] + joint_angle_diff_1 * rs / Rm1;
-
-    return m;
 }
 
 float unwrap_angle(float current) {
@@ -252,7 +292,7 @@ void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
         set_position(m2, motor_pos.th2, kp, kd);
     }
     if (setting_motor[2]) {
-    set_position(m3, motor_pos.th3, kp, kd);
+        set_position(m3, motor_pos.th3, kp, kd);
     }
 }
 
@@ -457,16 +497,5 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
   set_position(axis, target_position, 10, 0.5);
 
   return target_position;
-}
-
-angles generate_step_response(angles a, angles b, float freq) {
-    uint32_t period_ms = (uint32_t)(1000.0f / freq);
-    uint32_t t = millis() % period_ms;
-
-    if (t < period_ms / 2) {
-        return a;
-    } else {
-        return b;
-    }
 }
 

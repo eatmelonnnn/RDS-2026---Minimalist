@@ -521,7 +521,7 @@
     "last_paths": {
       "idf": "",
       "netlist": "",
-      "plot": "",
+      "plot": "../../Desktop/AngleReader/",
       "specctra_dsn": "",
       "vrml": ""
     },
