@@ -1,0 +1,81 @@
+<mujoco model="">
+  <option timestep="1e-02"/>
+  <asset>
+    <texture name="grid" type="2d" builtin="checker" rgb1="0.1 0.2 0.3" rgb2="0.2 0.3 0.4" width="512" height="512"/>
+    <material name="grid"  texture="grid" texrepeat="1 1" texuniform="true" reflectance="0.2"/>
+  </asset>
+  <default>
+      <geom type="sphere" size="0.1" rgba="0.4 0.6 0.4 1"/>
+      <default class="free">
+          <geom rgba="0.6 0.2 0.6 1"/>
+          <joint type="free"/>
+      </default>
+  </default>
+
+  <worldbody>
+      <!-- Tension and compression elastic forces -->
+      <body pos="-0.6 -0.4 0.3">
+          <site name="s0"/>
+          <geom/>
+      </body>
+      <body pos="0.1 -0.4 0.1" childclass="free">
+          <joint/>
+          <site name="s1"/>
+          <geom/>
+      </body>
+      
+      <!-- Tension only elastic forces -->
+      <body pos="-0.6 0.6 0.3">
+          <site name="s2"/>
+          <geom/>
+      </body>
+      <body pos="0.1 0.6 0.1" childclass="free">
+          <joint/>
+          <site name="s3"/>
+          <geom/>
+      </body>
+
+      <!-- Following bodies are to ensure that resulting stiffness are equal in both cases -->
+      <body pos="0.6 -0.4 1.0981">
+          <site name="s4"/>
+          <geom/>
+      </body>
+      <body pos="0.6 -0.4 0.3" childclass="free">
+          <joint/>
+          <site name="s5"/>
+          <geom mass="1"/>
+      </body>
+      
+      <body pos="0.6 0.6 1.0981">
+          <site name="s6"/>
+          <geom/>
+      </body>
+      <body pos="0.6 0.6 0.3" childclass="free">
+          <joint/>
+          <site name="s7"/>
+          <geom mass="1"/>
+      </body>
+
+    <geom type="plane" size="0 0 0.05" material="grid" rgba="1 1 1 1"/>
+    <light mode="trackcom" pos="0 0.5 6" diffuse="0.8 0.8 0.8" specular="0.3 0.3 0.3"/>
+  </worldbody>
+  <tendon>
+    <spatial stiffness="100" springlength="0.5">
+      <site site="s0"/>
+      <site site="s1"/>
+    </spatial>
+    <spatial limited="true" springlength="0.5" range="0 0.5" solimplimit="0.001 0.001 0.001 0.5 1" solreflimit="-100 -0" >
+      <site site="s2"/>
+      <site site="s3"/>
+    </spatial>
+
+    <spatial springlength="0.7" stiffness="100">
+      <site site="s4"/>
+      <site site="s5"/>
+    </spatial>
+    <spatial springlength="0.7" limited="true" range="0 0.7" solimplimit="0.001 0.001 0.001 0.5 1" solreflimit="-100 -0" >
+      <site site="s6"/>
+      <site site="s7"/>
+    </spatial>
+</tendon>
+</mujoco>

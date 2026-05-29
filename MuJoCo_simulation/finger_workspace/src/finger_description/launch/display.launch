@@ -3,7 +3,7 @@
     name="model" />
   <param
     name="robot_description"
-    textfile="$(find finger)/urdf/finger.urdf" />
+    textfile="$(find urdf_exports2)/urdf/urdf_exports2.urdf" />
   <node
     name="joint_state_publisher_gui"
     pkg="joint_state_publisher_gui"
@@ -16,5 +16,5 @@
     name="rviz"
     pkg="rviz"
     type="rviz"
-    args="-d $(find finger)/urdf.rviz" />
+    args="-d $(find urdf_exports2)/urdf.rviz" />
 </launch>

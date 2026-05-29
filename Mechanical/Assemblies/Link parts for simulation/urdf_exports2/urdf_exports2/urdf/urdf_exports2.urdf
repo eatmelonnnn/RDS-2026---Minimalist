@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="urdf_exports2">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.014963 0.0095373 0.016002"
+        rpy="0 0 0" />
+      <mass
+        value="0.011071" />
+      <inertia
+        ixx="2.4908E-06"
+        ixy="-4.4596E-09"
+        ixz="1.5947E-07"
+        iyy="2.8376E-06"
+        iyz="1.5412E-10"
+        izz="2.3239E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="splay_link">
+    <inertial>
+      <origin
+        xyz="-3.6026E-05 0.0074618 0.0080911"
+        rpy="0 0 0" />
+      <mass
+        value="0.015542" />
+      <inertia
+        ixx="1.4053E-06"
+        ixy="-2.483E-10"
+        ixz="5.6183E-09"
+        iyy="1.3489E-06"
+        iyz="-8.5171E-08"
+        izz="1.3028E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/splay_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/splay_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="splay_joint"
+    type="revolute">
+    <origin
+      xyz="0.01504 0.018 0.016"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="splay_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-0.35"
+      upper="0.35"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="mcp_link">
+    <inertial>
+      <origin
+        xyz="-4.0155E-05 0.019564 0.004554"
+        rpy="0 0 0" />
+      <mass
+        value="0.022212" />
+      <inertia
+        ixx="2.81E-06"
+        ixy="-5.6386E-09"
+        ixz="-2.2843E-08"
+        iyy="2.3755E-06"
+        iyz="8.1599E-08"
+        izz="3.5989E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/mcp_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/mcp_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="mcp_joint"
+    type="revolute">
+    <origin
+      xyz="0.00015675 0.029856 0"
+      rpy="0 0 0" />
+    <parent
+      link="splay_link" />
+    <child
+      link="mcp_link" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="1.57"
+      effort="1"
+      velocity="1" />
+  </joint>
+  <link
+    name="pip_link">
+    <inertial>
+      <origin
+        xyz="9.3176E-05 0.02496 5.2699E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.026546" />
+      <inertia
+        ixx="4.5522E-06"
+        ixy="-1.1575E-08"
+        ixz="9.6164E-09"
+        iyy="3.7501E-06"
+        iyz="9.2039E-07"
+        izz="4.4886E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/pip_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://urdf_exports2/meshes/pip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="pip_joint"
+    type="revolute">
+    <origin
+      xyz="0.00022576 0.042999 0"
+      rpy="0 0 0" />
+    <parent
+      link="mcp_link" />
+    <child
+      link="pip_link" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="0"
+      upper="1.57"
+      effort="1"
+      velocity="1" />
+  </joint>
+</robot>
