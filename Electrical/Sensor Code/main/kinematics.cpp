@@ -49,14 +49,16 @@ float norm(float a, float b) {
 }
 
 angles cartesian_pos_to_joint_pos(cartesian_pos xyz) {
-  float D = norm(xyz.y, xyz.z);
   float r = norm(xyz.x, xyz.y);
   float r_prime = r - LENGTH_C;
+  float D = norm(r_prime, xyz.z);
+  
 
   angles a;
   a.th1 = atan2(xyz.x, xyz.y);
   a.th3 = acos((sq(D) - sq(LENGTH_B) - sq(A_PRIME)) / (2*LENGTH_B*A_PRIME));
-  a.th2 = atan2(xyz.z, r_prime) - atan2(A_PRIME * sin(a.th3), LENGTH_B + A_PRIME * cos(a.th3)) - DELTA;
+  a.th2 = atan2(xyz.z, r_prime) - atan2(A_PRIME * sin(a.th3), LENGTH_B + A_PRIME * cos(a.th3));
+  a.th3 = a.th3 - DELTA;
   
   return a;
 }

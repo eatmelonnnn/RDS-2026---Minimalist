@@ -175,6 +175,31 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
+void step_force_command(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3],
+                                float min_force,
+                                float max_force,
+                                float freq) {
+    
+    float cur_force = generate_fingertip_force_step(min_force, max_force, freq);
+    set_fingertip_force_zero(motor1,
+                            motor2,
+                            motor3,
+                            cur_force, 
+                            splay_p, 
+                            splay_d, 
+                            mcp_control,
+                            dip_control,
+                            calibration_hardstops);
+}
+    
+            
 void set_fingertip_force_zero(motor_axis * motor1,
                                 motor_axis * motor2,
                                 motor_axis * motor3,
@@ -202,20 +227,25 @@ void set_fingertip_force_zero(motor_axis * motor1,
       mcp_control,
        &initial_loop_mcp) + tendon_m_torques[MCP];
   // Serial.println(torque_mcp);
-  set_torque(motor2, torque_mcp);
+//   set_torque(motor2, torque_mcp);
+set_torque(motor2, 0.0);
+// CAN_message_t  rxMsg;
+// if (can3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
+//                 unpack_reply(&rxMsg, motor2 ->controller_id);
+//                 Serial.println(torque);}
   float torque_dip = pid_correction(get_dip_tension(),
    tendon_tensions[DIP],
     &prev_error_dip,
      &i_error_dip,
       dip_control,
        &initial_loop_dip) + tendon_m_torques[DIP];
-  set_torque(motor3, torque_dip);
+  set_torque(motor3, 0.0);
   bool splay_on[3] = {true, false, false};
   angles zero_splay = {0.0, 0.0, 0.0};
-  set_joint_position(motor1, motor2, motor3,
-                        zero_splay,
-                        calibration_hardstops,
-                        splay_p, splay_d, splay_on);
+//   set_joint_position(motor1, motor2, motor3,
+//                         zero_splay,
+//                         calibration_hardstops,
+//                         splay_p, splay_d, splay_on);
 
 }
 

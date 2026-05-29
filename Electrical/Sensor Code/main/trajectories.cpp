@@ -25,6 +25,51 @@ angles generate_ellipse(float freq) {
   
 }
 
+angles generate_step_position_benchmark(float freq)  {
+  cartesian_pos start = {
+    0.0f,
+    0.040f,
+    0.070f
+};
+cartesian_pos end = {
+    0.0f,
+    0.040f,
+    0.050f
+};
+cartesian_pos cart_now;
+uint32_t period_ms = (uint32_t)(1000.0f / freq);
+    uint32_t t = millis() % period_ms;
+
+    if (t < period_ms / 2) {
+        cart_now  = start;
+    } else {
+        cart_now = end;
+    }
+    angles r = cartesian_pos_to_joint_pos(cart_now);
+  return r;
+}
+
+angles generate_lissajous() {
+
+    const float f = 0.25f;     // Hz
+    const float A = 0.015f;    // 1.5 cm
+
+    const float YC = 0.030f;
+    const float ZC = 0.060f;
+
+    cartesian_pos p;
+
+    p.x = 0.0f;
+
+    // Lissajous trajectory
+    float t = millis()/1000.0;
+    p.y = YC + A*sin(2.0f*M_PI*f*t);
+
+    p.z = ZC + A*sin(4.0f*M_PI*f*t + 3.0f*M_PI/4.0f);
+    angles cur_pos = cartesian_pos_to_joint_pos(p);
+    return cur_pos;
+}
+
 angles generate_step_response(angles a, angles b, float freq) {
     uint32_t period_ms = (uint32_t)(1000.0f / freq);
     uint32_t t = millis() % period_ms;
@@ -35,3 +80,14 @@ angles generate_step_response(angles a, angles b, float freq) {
         return b;
     }
 }
+
+float generate_fingertip_force_step(float a, float b, float freq){
+  uint32_t period_ms = (uint32_t)(1000.0f / freq);
+      uint32_t t = millis() % period_ms;
+
+      if (t < period_ms / 2) {
+          return a;
+      } else {
+          return b;
+      }
+  }

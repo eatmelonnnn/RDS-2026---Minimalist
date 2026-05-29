@@ -2,14 +2,7 @@
 #include "tensionsensor.h"
 #include "trajectories.h"
 
-#define FINGER_POSITION_CONTROL_MODE 1
-
-enum CONTROL_MODES {
-  STEP_POSITION,
-  POSITION_TRACKING,
-  FORCE_CONTROL,
-  CALIBRATION
-};
+#define FINGER_POSITION_CONTROL_MODE 0
 
 
 k dip_control = {0.005, 0, 0};
@@ -19,8 +12,8 @@ k mcp_control = {0.005, 0, 0};
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
 // Step position controlmode
-angles poseA = {0.0f, PI/4, 0.0f};
-angles poseB = {0.00f, 0.0, PI/4};
+angles poseA = {0.0f, 0.0, 0.0f};
+angles poseB = {0.00f, 0.0, 0.0};
 float pos1_unwrapped = 0;
 float pos2_unwrapped = 0;
 float pos3_unwrapped = 0;
@@ -31,7 +24,7 @@ motor_axis motor3;
 
 float tension_offset_dip  = 0.0;
 
-float calibration_hardstops[3] = {0.50, -0.07, 0.40};
+float calibration_hardstops[3] = {1.88, 1.1, -1.25};
 
 void setup() {
   // put your setup code here, to run once:
@@ -111,8 +104,10 @@ if (FINGER_POSITION_CONTROL_MODE) {
     static uint32_t lastCmd = 0;
     if (millis() - lastCmd >= 10) {  
 
-        // target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
-        target_joint = generate_ellipse(0.5f);
+        //  target_joint = generate_step_response(poseA, poseB, 0.5f); // 0.5 Hz
+        // target_joint = generate_ellipse(0.5f);
+        // target_joint = generate_step_position_benchmark(1);
+        target_joint = generate_lissajous();
         bool motor_on[3] = {true, true, true};
         // Send to motors
         set_joint_position(&motor1, &motor2, &motor3,
@@ -187,6 +182,26 @@ if (FINGER_POSITION_CONTROL_MODE) {
     }
 }
 else {
+  // static uint32_t old_change = millis();
+  // static float torque_val = 0;
+  // if (((millis() -  old_change)  >  1000) && torque_val < 0.04) {
+  //   torque_val = torque_val + 0.001;
+  //   old_change = millis();
+  // }
+  // Serial.println("force control");
   set_fingertip_force_zero(&motor1,&motor2,&motor3,4, 25.0, 3.0, mcp_control,dip_control,calibration_hardstops);
+  // step_force_command(&motor1,&motor2,&motor3, 25.0, 3.0, mcp_control, dip_control,calibration_hardstops, 1, 3, 1);
+                               
+//   set_torque(&motor2, torque_val);
+//   CAN_message_t  rxMsg;
+// if (can3.read(rxMsg) && rxMsg.id == MOTOR2_ID) {
+//                 unpack_reply(&rxMsg, MOTOR2_ID);
+//                 Serial.println(torque);}
+
+Serial.print("MCP: ");
+Serial.println(get_mcp_tension());
+Serial.print("DIP: ");
+Serial.println(get_dip_tension());
 }
+
 }

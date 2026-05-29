@@ -114,17 +114,17 @@ void update_sensor_readings(uint8_t PIN_CS, int32_t zeroOffset, uint8_t  PIN_DRD
     float tension = (raw - zeroOffset) / countsPerUnit;
     if (PIN_CS == PIN_CS_DIP) {
       tension_dip = tension;
-      // Serial.print("New DIP tension: ");
-      // Serial.print(get_dip_tension());
-      // Serial.print(", ");
-      // Serial.print(tension_dip);
+      Serial.print("New DIP tension: ");
+      Serial.print(get_dip_tension());
+      Serial.print(", ");
+      Serial.print(tension_dip);
     }
     else {
       tension_mcp = tension;
-      // Serial.print("New MCP tension: ");
-      // Serial.print(get_mcp_tension());
-      // Serial.print(", ");
-      // Serial.print(tension_mcp);
+      Serial.print("New MCP tension: ");
+      Serial.print(get_mcp_tension());
+       Serial.print(", ");
+      Serial.print(tension_mcp);
     }
   }
 }

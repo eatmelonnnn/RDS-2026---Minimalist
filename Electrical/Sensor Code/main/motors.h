@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "kinematics.h"
 #include "tensionsensor.h"
+#include "trajectories.h"
 
 extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 
@@ -21,8 +22,8 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define V_MAX  30.0f
 #define I_MIN -18.0f
 #define I_MAX  18.0f
-#define T_MIN -0.1f
-#define T_MAX  0.1f
+#define T_MIN -0.3f
+#define T_MAX  0.3f
 #define LOGGING true
 
 #define CAL_DELAY 1000
@@ -112,6 +113,17 @@ void set_fingertip_force_zero(motor_axis * motor1,
                                 k dip_control,
                                 float calibration_hardstops[3]);
 
+void step_force_command(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3],
+                                float min_force,
+                                float max_force,
+                                float freq);
 
 float generate_sine_wave(motor_axis *axis, float amplitude, float angular_frequency);
 angles generate_step_response(angles a, angles b, float freq);
