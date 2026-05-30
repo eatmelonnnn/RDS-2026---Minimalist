@@ -66,7 +66,7 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset) {
 int main() {
     // Load model
     char error[1000] = "";
-    m = mj_loadXML("../../finger_description/urdf/finger.xml", nullptr, error, 1000);
+    m = mj_loadXML("../../finger_description/urdf/test.xml", nullptr, error, 1000);
     if (!m) {
         printf("Error loading model: %s\n", error);
         return 1;
@@ -95,26 +95,18 @@ int main() {
     glfwSetScrollCallback(window, scroll);
 
     // Init MuJoCo rendering
-    
     mjv_defaultCamera(&cam);
-    // Better default camera
     cam.lookat[0] = 0.0;
     cam.lookat[1] = 0.0;
     cam.lookat[2] = 0.0;
 
-    cam.distance = 0.45;
-    cam.azimuth = 260;
+    cam.distance = 1;
+    cam.azimuth = 90;
     cam.elevation = -20;
 
     mjv_defaultOption(&opt);
     opt.flags[mjVIS_JOINT] = true;
-    opt.frame = mjFRAME_BODY;   // other mjFRAME_GEOM
-    opt.frame = mjFRAME_WORLD;
-    // opt.label = mjLABEL_BODY; //  mjLABEL_JOINT  mjLABEL_GEOM
-
-    //  opt.flags[mjVIS_ACTUATOR] = true;
-    //  opt.flags[mjVIS_CONTACTPOINT] = true;
-    //  opt.flags[mjVIS_CONTACTFORCE] = true;
+    opt.frame = mjFRAME_BODY;
 
     mjv_defaultScene(&scn);
     mjr_defaultContext(&con);
@@ -122,55 +114,46 @@ int main() {
     mjr_makeContext(m, &con, mjFONTSCALE_150);
 
     // Config frame and joint scales
-    m->vis.scale.framelength = 0.45f;
+    m->vis.scale.framelength = 0.25f;
     m->vis.scale.framewidth = 0.01f;
     m->vis.scale.jointwidth = 0.02;
-    
-    glfwSwapInterval(0);  // disable vsync for faster rendering
 
-    for (int j = 0; j < m->njnt; j++) {
-        printf("Joint %d: %s  qpos_idx: %d  value: %f\n",
-            j, mj_id2name(m, mjOBJ_JOINT, j),
-            m->jnt_qposadr[j],
-            d->qpos[m->jnt_qposadr[j]]);
-        }
-    
-    mj_forward(m, d);
-    // d->qpos[0] = 0.0;
-    // mj_forward(m, d);
-    int pip_id = mj_name2id(m, mjOBJ_BODY, "pip_link");
-    printf("Fingertip pos: x=%f  y=%f  z=%f\n",
-        d->xpos[pip_id*3+0],
-        d->xpos[pip_id*3+1],
-        d->xpos[pip_id*3+2]);
+    glfwSwapInterval(0);
 
-    printf("pendulum qpos0: %f\n", m->qpos0[0]);
+    fflush(stdout);
+    int i = 0;
+    bool contact_active = false;
 
-    
-    // ── Control loop ──
-    // geom IDs of PIP and Ball for collision detection
     int pip_geom_id  = mj_name2id(m, mjOBJ_GEOM, "pip_geom");
     int ball_geom_id = mj_name2id(m, mjOBJ_GEOM, "ball_geom");
 
-    int i = 0;        
-    bool contact_active = false;
-    printf("\n\n");
-    fflush(stdout);
-    
-    float sample_pos = 0;
-    float up = true;
+    double th1, th2, th3;
+    double dth1, dth2, dth3;
+
+    // Tuning knobs
+    const double th2_rest = 0.0;
+    const double th3_rest = 0.0;
+
+    bool was_contact = false;
+    double post_contact_timer = 0.0;
+    const double recovery_time = 0.3;       // hold "open" command for 300 ms
+    const double dt_outer = 0.001;          // matches single mj_step (timestep in XML = 0.001)
 
     while (!glfwWindowShouldClose(window)) {
 
+        // Step simulation (ONCE per loop)
         mj_step(m, d);
 
         // ── Read joint states ──
-        double th1 = d->qpos[1];  // splay
-        double th2 = d->qpos[2];  // MCP
-        double th3 = d->qpos[3];  // PIP
-        double dth1 = d->qvel[1];
-        double dth2 = d->qvel[2];
-        double dth3 = d->qvel[3];
+        th1 = d->qpos[0];  // splay
+        th2 = d->qpos[1];  // MCP
+        th3 = d->qpos[2];  // PIP
+
+        dth1 = d->qvel[0];
+        dth2 = d->qvel[1];
+        dth3 = d->qvel[2];
+
+        d->ctrl[0] = 0;  // hold splay
 
         // ── Contact detection ──
         contact_active = false;
@@ -183,34 +166,36 @@ int main() {
             }
         }
 
-        /*    
+        // ── Control logic ──
         if (contact_active) {
-            // On contact — push back with impedance force
-            double kp = 5.0, kd = 0.5;
-            d->ctrl[1] = -kp * th2 - kd * dth2;  // resist MCP deflection
-            d->ctrl[2] = -kp * th3 - kd * dth3;  // resist PIP deflection
-        } else {
-            // No contact — finger is relaxed at neutral
+            // On contact: command finger BACK to zero (pushes ball away)
             d->ctrl[1] = 0.0;
             d->ctrl[2] = 0.0;
-        }
-        */
-        d->qpos[0] = sample_pos;
-        //  d->ctrl[0] = sample_torque;  // splay always held
-        //  d->ctrl[1] = sample_torque;
+            was_contact = true;
+            post_contact_timer = recovery_time;
 
-        // ── Print every 10 steps ──
-        if (i % 10 == 0) {
-            printf("Position:  SPLAY: %f  MCP: %f  PIP: %f Rod_hinge: %f\n",
-                d->qpos[1], d->qpos[2], d->qpos[3], d->qpos[0]);
-            printf("Velocity:  SPLAY: %f  MCP: %f  PIP: %f Rod_hinge: %f\n",
-                d->qvel[1], d->qvel[2], d->qvel[3], d->qvel[0]);
-            printf("Computed joint angles: th2 = %f, th3 = %f\n\n", th2, th3);
+        } else if (post_contact_timer > 0.0) {
+            // Just lost contact — keep commanding open to retract fully
+            d->ctrl[1] = 0.0;
+            d->ctrl[2] = 0.0;
+            post_contact_timer -= dt_outer;
+
+        } else {
+            // Fully recovered — hold rest pose
+            d->ctrl[1] = th2_rest;
+            d->ctrl[2] = th3_rest;
+        }
+
+        // ── Render & print ──
+        if (i % 50 == 0) {
+            const char* branch = contact_active ? "CONTACT"
+                                : (post_contact_timer > 0 ? "RECOVERY" : "REST");
+            printf("Branch: %s timer=%.3f | Pos MCP: %.3f PIP: %.3f | Rod: %.3f\n",
+                branch, post_contact_timer, d->qpos[1], d->qpos[2], d->qpos[3]);
             fflush(stdout);
         }
 
-        // ── Render ──
-        if (i % 2 == 0) {
+        if (i % 10 == 0) {
             mjrRect viewport = {0, 0, 0, 0};
             glfwGetFramebufferSize(window, &viewport.width, &viewport.height);
             mjv_updateScene(m, d, &opt, nullptr, &cam, mjCAT_ALL, &scn);
@@ -220,22 +205,6 @@ int main() {
         }
 
         i++;
-
-        if (up){
-            sample_pos += 0.1;
-        }
-        else{
-            sample_pos -= 0.1;
-        }
-
-        if (sample_pos > 1.30){
-            up = false;
-        }
-
-        if (sample_pos <= 0){
-            up = true;
-        }
-        
     }
 
     // Cleanup

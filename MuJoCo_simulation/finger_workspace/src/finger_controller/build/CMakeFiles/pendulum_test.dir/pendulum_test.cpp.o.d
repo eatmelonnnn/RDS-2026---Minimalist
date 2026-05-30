@@ -1,5 +1,5 @@
-CMakeFiles/finger_controller.dir/finger_controller.cpp.o: \
-  /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/finger_controller.cpp \
+CMakeFiles/pendulum_test.dir/pendulum_test.cpp.o: \
+  /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/pendulum_test.cpp \
   /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/kinematics.h \
   /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/build/mujoco_include/mujoco/mujoco.h \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/stdlib.h \
@@ -169,4 +169,32 @@ CMakeFiles/finger_controller.dir/finger_controller.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers/gltypes.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers/OpenGLAvailability.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/os/availability.h \
-  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/cmath
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/cmath \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/chrono \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/ctime \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/ratio \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/thread \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/system_error \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__errc \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/cerrno \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/errno.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/errno.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/errno.h \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__mutex_base \
+  /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/__threading_support \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/pthread_impl.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/sched.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread_impl.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_cond_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_condattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_key_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutex_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_mutexattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_once_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlock_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_rwlockattr_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/pthread/qos.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/qos.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_mach_port_t.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sched.h
