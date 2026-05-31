@@ -175,6 +175,17 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
+void set_home_joint_position(motor_axis *motor1,motor_axis *motor2,motor_axis *motor3, float calibration_hardstops[3]) {
+    // set at zero position
+  angles target_joint = {0, 0, 0};
+  bool motor_on[3] = {true, true, true};
+  // Send to motors
+  set_joint_position(motor1, motor2, motor3,
+                  target_joint,
+                  calibration_hardstops,
+                  25.0f, 3.0f, motor_on);
+}
+
 void step_force_command(motor_axis * motor1,
                                 motor_axis * motor2,
                                 motor_axis * motor3,
@@ -227,8 +238,8 @@ void set_fingertip_force_zero(motor_axis * motor1,
       mcp_control,
        &initial_loop_mcp) + tendon_m_torques[MCP];
   // Serial.println(torque_mcp);
-//   set_torque(motor2, torque_mcp);
-set_torque(motor2, 0.0);
+ set_torque(motor2, torque_mcp);
+// set_torque(motor2, 0.0);
 // CAN_message_t  rxMsg;
 // if (can3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
 //                 unpack_reply(&rxMsg, motor2 ->controller_id);
@@ -239,13 +250,14 @@ set_torque(motor2, 0.0);
      &i_error_dip,
       dip_control,
        &initial_loop_dip) + tendon_m_torques[DIP];
-  set_torque(motor3, 0.0);
+    set_torque(motor3, torque_dip);
+//   set_torque(motor3, 0.0);
   bool splay_on[3] = {true, false, false};
   angles zero_splay = {0.0, 0.0, 0.0};
-//   set_joint_position(motor1, motor2, motor3,
-//                         zero_splay,
-//                         calibration_hardstops,
-//                         splay_p, splay_d, splay_on);
+  set_joint_position(motor1, motor2, motor3,
+                        zero_splay,
+                        calibration_hardstops,
+                        splay_p, splay_d, splay_on);
 
 }
 
@@ -270,7 +282,8 @@ void set_torque(motor_axis *axis, float torque) {
     // set_current(axis,current);
     
     // Clamp inputs to valid ranges
-    float actual_torque = constrain(torque, T_MIN, T_MAX);
+    float actual_torque_pre_gearing = constrain(torque, T_MIN, T_MAX);
+    float actual_torque = actual_torque_pre_gearing/GEAR_RATIO;
 
     // Convert to 16/12-bit unsigned ints
     uint16_t pos_int = float_to_uint(0, P_MIN, P_MAX, 16);
@@ -528,4 +541,6 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
 
   return target_position;
 }
+
+
 

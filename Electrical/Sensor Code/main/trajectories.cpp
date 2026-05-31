@@ -55,7 +55,7 @@ angles generate_lissajous() {
     const float A = 0.015f;    // 1.5 cm
 
     const float YC = 0.030f;
-    const float ZC = 0.060f;
+    const float ZC = 0.0625f;
 
     cartesian_pos p;
 

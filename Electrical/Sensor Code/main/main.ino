@@ -2,7 +2,7 @@
 #include "tensionsensor.h"
 #include "trajectories.h"
 
-#define FINGER_POSITION_CONTROL_MODE 0
+#define FINGER_POSITION_CONTROL_MODE 1
 
 
 k dip_control = {0.005, 0, 0};
@@ -24,7 +24,7 @@ motor_axis motor3;
 
 float tension_offset_dip  = 0.0;
 
-float calibration_hardstops[3] = {1.88, 1.1, -1.25};
+float calibration_hardstops[3] = {0.66, -0.15, -0.1};
 
 void setup() {
   // put your setup code here, to run once:
@@ -189,8 +189,8 @@ else {
   //   old_change = millis();
   // }
   // Serial.println("force control");
-  set_fingertip_force_zero(&motor1,&motor2,&motor3,4, 25.0, 3.0, mcp_control,dip_control,calibration_hardstops);
-  // step_force_command(&motor1,&motor2,&motor3, 25.0, 3.0, mcp_control, dip_control,calibration_hardstops, 1, 3, 1);
+  // set_fingertip_force_zero(&motor1,&motor2,&motor3,4, 25.0, 3.0, mcp_control,dip_control,calibration_hardstops);
+  step_force_command(&motor1,&motor2,&motor3, 25.0, 3.0, mcp_control, dip_control,calibration_hardstops, 1, 3, 1);
                                
 //   set_torque(&motor2, torque_val);
 //   CAN_message_t  rxMsg;
@@ -198,10 +198,10 @@ else {
 //                 unpack_reply(&rxMsg, MOTOR2_ID);
 //                 Serial.println(torque);}
 
-Serial.print("MCP: ");
-Serial.println(get_mcp_tension());
-Serial.print("DIP: ");
-Serial.println(get_dip_tension());
+// Serial.print("MCP: ");
+// Serial.println(get_mcp_tension());
+// Serial.print("DIP: ");
+// Serial.println(get_dip_tension());
 }
 
 }

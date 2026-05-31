@@ -1,0 +1,19 @@
+#ifndef STATE_MACHINE_H
+#define STATE_MACHINE_H
+
+#include "motors.h"
+
+
+enum CONTROL_MODES {
+  CALIBRATION = 0,
+  STEP_POSITION,
+  LISSAJOU_POSITION,
+  ELLIPSE_POSITION,
+  ZERO_FORCE,
+  STEP_FORCE,
+  MAX_FORCE,
+  STARTUP = -1
+};
+
+
+#endif

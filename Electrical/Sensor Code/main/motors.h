@@ -15,6 +15,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define MOTOR3_ID 5
 
 #define KT 0.127f
+#define GEAR_RATIO 10.0f
 
 #define P_MIN -12.5f //rad
 #define P_MAX  12.5f
@@ -27,6 +28,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define LOGGING true
 
 #define CAL_DELAY 1000
+#define MAX_FINGERTIP_FORCE 20.0f
 
 #define NUM_CAL_CYCLES 2
 #define NUM_CAL_MEASURES_PER_CYCLE 3
@@ -102,7 +104,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3);
 
 void set_torque(motor_axis *axis, float torque);
-
+void set_home_joint_position(motor_axis *motor1,motor_axis *motor2,motor_axis *motor3, float calibration_hardstops[3]);
 void set_fingertip_force_zero(motor_axis * motor1,
                                 motor_axis * motor2,
                                 motor_axis * motor3,
