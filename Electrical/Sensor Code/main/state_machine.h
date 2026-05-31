@@ -15,5 +15,16 @@ enum CONTROL_MODES {
   STARTUP = -1
 };
 
+#define PIN_CALIBRATION 2
+#define PIN_STEP_POSITION 3
+#define PIN_LISSAJOU_POSITION 4
+#define PIN_ELLIPSE_POSITION 5
+#define PIN_ZERO_FORCE 6
+#define PIN_STEP_FORCE 7
+#define PIN_MAX_FORCE 8
 
+
+
+void initial_universal_setup();
+void state_machine_cycle();
 #endif

@@ -29,7 +29,7 @@ void comm_can_transmit_sid(uint32_t id, const uint8_t *data, uint8_t len, uint8_
     msg.buf[i] = data[i];
   }
 
-  can3.write(msg);
+  can_3.write(msg);
 }
 
 // ====== Process Incoming CAN Messages ======
@@ -241,7 +241,7 @@ void set_fingertip_force_zero(motor_axis * motor1,
  set_torque(motor2, torque_mcp);
 // set_torque(motor2, 0.0);
 // CAN_message_t  rxMsg;
-// if (can3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
+// if (can_3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
 //                 unpack_reply(&rxMsg, motor2 ->controller_id);
 //                 Serial.println(torque);}
   float torque_dip = pid_correction(get_dip_tension(),
@@ -365,6 +365,7 @@ void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
+
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold) {
     CAN_message_t rxMsg;
 
@@ -378,7 +379,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
     if (!LOGGING) {Serial.println("Getting initial position");}
     while (!initialized) {
         get_encoder_values(axis);
-        if (can3.read(rxMsg)) {
+        if (can_3.read(rxMsg)) {
             // Serial.println("Message Read");
             // Serial.print("CAN ID: ");
             // Serial.print(rxMsg.id);
@@ -417,7 +418,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
         while (!torque_zero) {
             set_position(axis, pos_initial, 0, 0);
             delay(5);  // ~200 Hz
-            if (can3.read(rxMsg) && rxMsg.id == motor_id) {
+            if (can_3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
                 if (!LOGGING) {
                 Serial.print("Reset torque: ");
@@ -430,7 +431,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
     }
 
         }
-                    while (can3.read(rxMsg)) {
+                    while (can_3.read(rxMsg)) {
                 // just discard
             }
         set_velocity(axis, velocity, 2.0f);
@@ -453,13 +454,13 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
                 break;
             }
             
-            if (can3.read(rxMsg) && rxMsg.id == motor_id) {
+            if (can_3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
                 
                 float current = torque;
                 static uint32_t lastprint = millis();
                 if ((millis() - lastprint) > 200) {
-                    // Serial.println(current);
+                    Serial.println(current);
                     lastprint= millis();
                 }
                 
@@ -488,7 +489,6 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
 
     return avg;
 }
-
 
 
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3) {

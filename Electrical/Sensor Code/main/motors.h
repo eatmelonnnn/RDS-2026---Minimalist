@@ -8,7 +8,7 @@
 #include "tensionsensor.h"
 #include "trajectories.h"
 
-extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
+extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 
 #define MOTOR1_ID 3 // struggling to move
 #define MOTOR2_ID 4
@@ -23,9 +23,9 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can3;
 #define V_MAX  30.0f
 #define I_MIN -18.0f
 #define I_MAX  18.0f
-#define T_MIN -0.3f
-#define T_MAX  0.3f
-#define LOGGING true
+#define T_MIN -18.0f
+#define T_MAX  18.0f
+#define LOGGING false
 
 #define CAL_DELAY 1000
 #define MAX_FINGERTIP_FORCE 20.0f

@@ -1,6 +1,7 @@
 #include "state_machine.h"
 
 float calibration_hardstops_motors[3] = {0, 0, 0};
+bool first_time = true;
 
 volatile CONTROL_MODES cur_system_state = CALIBRATION;
 CONTROL_MODES prev_system_state = STARTUP;
@@ -10,6 +11,7 @@ k dip_control_force = {0.005, 0, 0};
 k mcp_control_force = {0.005, 0, 0};
 
 uint32_t initial_max_force_time = 0;
+uint32_t lastCmd = 0;
 
 FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 
@@ -23,6 +25,7 @@ void switch_calibration() {
   cur_system_state = CALIBRATION;
 }
 void switch_step_position() {
+  Serial.println("step_pos");
   cur_system_state = STEP_POSITION;
 }
 void switch_lissajou_position() {
@@ -72,6 +75,14 @@ void initial_universal_setup() {
   adsInit(PIN_CS_DIP);
   adsInit(PIN_CS_MCP);
   Serial.println("ADS initialize");
+  pinMode(PIN_CALIBRATION, INPUT);
+  pinMode(PIN_STEP_POSITION, INPUT);
+  pinMode(PIN_LISSAJOU_POSITION, INPUT);
+  pinMode(PIN_ELLIPSE_POSITION, INPUT);
+  pinMode(PIN_ZERO_FORCE, INPUT);
+  pinMode(PIN_STEP_FORCE, INPUT);
+  pinMode(PIN_MAX_FORCE, INPUT);
+
 }
 
 void calibration_setup() {
@@ -82,6 +93,8 @@ void calibration_setup() {
     set_torque(&m2, 0);
     set_torque(&m3, 0);
   }
+  delay(1000);
+  Serial.println("Now calibrating");
   // position calibration
   full_calibration(calibration_hardstops_motors, &m1, &m2, &m3);
   Serial.print("Calibration offsets: ");
@@ -91,7 +104,7 @@ void calibration_setup() {
     Serial.println();
   }
   // tension sensor calibration
-  static uint32_t start_zero_time = 0;
+  uint32_t start_zero_time = millis();
   while (millis() - start_zero_time < 1000) {
     set_home_joint_position(&m1,&m2,&m3, calibration_hardstops_motors);
   zero_sensors();
@@ -102,6 +115,7 @@ void calibration_setup() {
 void calibration_state() {
   // just stay in zero position after that
   set_home_joint_position(&m1,&m2,&m3, calibration_hardstops_motors);
+  delay(10);
 }
 
 void position_setup() {}
@@ -112,8 +126,8 @@ void force_setup() {
 }
 
 void step_position_state() {
-  static uint32_t lastCmd = 0;
     if (millis() - lastCmd >= 10) { 
+    lastCmd = millis();
     angles target_joint = generate_step_position_benchmark(1);
     bool motor_on[3] = {true, true, true};
     // Send to motors
@@ -152,7 +166,7 @@ void ellipse_position_state() {
 
 void step_force_state() {
   
-  step_force_command(&m1,&m2,&m3, 25.0, 3.0, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 1);
+  // step_force_command(&m1,&m2,&m3, 25.0, 3.0, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 1);
                                
   //   set_torque(&motor2, torque_val);
   //   CAN_message_t  rxMsg;
@@ -185,7 +199,7 @@ void max_force_state() {
   }
 
   // Serial.println("force control");
-  set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  // set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
 }
 
 void exit(uint32_t prev_state, uint32_t new_state) {
@@ -196,6 +210,7 @@ void exit(uint32_t prev_state, uint32_t new_state) {
   uint32_t start = millis();
   while ((millis() - start) < 500) {
     set_home_joint_position(&m1,&m2,&m3, calibration_hardstops_motors);
+    delay(10);
   }
   if (prev_state > 3) {
     detachInterrupt(digitalPinToInterrupt(PIN_DRDY_DIP));
@@ -208,7 +223,19 @@ void state_machine_cycle() {
   CONTROL_MODES cur_state = cur_system_state;
   // if changing states
   if (prev_system_state != cur_state) {
-    exit(prev_system_state, cur_state);
+    if (!first_time)  {
+      exit(prev_system_state, cur_state);
+    }
+    else {
+      first_time = false;
+      attachInterrupt(digitalPinToInterrupt(PIN_CALIBRATION), switch_calibration, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_STEP_POSITION), switch_step_position, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_LISSAJOU_POSITION), switch_lissajou_position, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_ELLIPSE_POSITION), switch_ellipse_position, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_ZERO_FORCE), switch_zero_force, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
+    }
     if (cur_state == CALIBRATION) {
       calibration_setup();
     }
@@ -220,6 +247,8 @@ void state_machine_cycle() {
       initial_max_force_time = millis();
     }
   }
+  //
+  prev_system_state = cur_system_state;
   // run current state
   switch (cur_system_state) {
   case CALIBRATION:
@@ -243,10 +272,12 @@ void state_machine_cycle() {
     break;
 
   case STEP_FORCE:
+    Serial.println("Step Force");
     step_force_state();
     break;
 
   case MAX_FORCE:
+    Serial.println("Max Force");
     max_force_state();
     break;
 
