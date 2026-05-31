@@ -1,5 +1,5 @@
-CMakeFiles/finger_controller.dir/finger_controller.cpp.o: \
-  /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/finger_controller.cpp \
+CMakeFiles/pendulum_test.dir/kinematics.cpp.o: \
+  /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/kinematics.cpp \
   /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/kinematics.h \
   /Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/build/mujoco_include/mujoco/mujoco.h \
   /Library/Developer/CommandLineTools/usr/bin/../include/c++/v1/stdlib.h \

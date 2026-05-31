@@ -1,9 +1,107 @@
-<mujoco model="pendulum_test">
+<mujoco>
+    <option gravity ="0 0 -9.81" timestep="0.001" viscosity="1.8e-5" density="1.204" integrator="implicit">
+        <flag contact="enable"/>
+    </option>
+
+    <default>
+        <geom solref="0.02 1" solimp="0.9 0.95 0.0051" condim="3" friction="0.8 0.005 0.0001"/>
+    </default>
+
+
+    <asset>
+    <!--Finger assets-->
+    <material name="base_mat"  rgba="1 1 1 1" emission="0.3"/>   <!-- red -->
+    <material name="splay_mat" rgba="1 1 1 1" emission="0.3"/>   <!-- blue -->
+    <material name="mcp_mat"   rgba="1 1 1 1" emission="0.3"/>   <!-- green -->
+    <material name="pip_mat"   rgba="1 1 1 1" emission="0.3"/>
+    <mesh name="base_link" content_type="model/stl" file="../meshes/base_link.STL"/>
+    <mesh name="splay_link" content_type="model/stl" file="../meshes/splay_link.STL"/>
+    <mesh name="mcp_link" content_type="model/stl" file="../meshes/mcp_link.STL"/>
+    <mesh name="pip_link" content_type="model/stl" file="../meshes/pip_link.STL"/>
+    <!--Ball pendulum asset-->
+    <material name="rod_mat" rgba="0.3 0.3 0.3 1" emission="0.3"/>
+    <material name="ball_mat" rgba="0.3 0.3 0.3 1" emission="0.3"/>
+    </asset>
+  
     <worldbody>
-        <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 1"/>
-    <geom type="plane" size="1 1 0.1" rgba=".9 0 0 1"/>
-    <body pos="0 0 2" euler="0 180 0">
-        <joint name=
+        <light diffuse=".5 .5 .5" pos="0 0 3" dir="0 0 -1" specular="0.3 0.3 0.3" directional="true"/>
+        <geom name="floor" type="plane" size="1 1 0.1" rgba="0.533 0.533 0.55 0.5"/>
+        
+        <body name="base_link" pos="0.345 0.03 0.15"  euler="0 180 -90">
+            <inertial pos="0 0 0" mass="0.1" diaginertia="1e-4 1e-4 1e-4"/>
+            <geom type="mesh" material="base_mat" mesh="base_link"/>
+
+            <body name="splay_link" pos="0.01504 0.018 0.016">
+                <inertial pos="-3.6026e-05 0.0074618 0.0080911" quat="0.540632 -0.194088 0.25543 0.77769" mass="0.015542" diaginertia="1.41539e-06 1.4041e-06 1.2375e-06"/>
+                <joint name="splay_joint" pos="0 0 0" axis="0 0 1" range="-0.35 0.35" damping="5" stiffness="12.5"/>
+                <geom type="mesh" material="splay_mat" mesh="splay_link" contype="0" conaffinity="0"/>
+                <geom name="splay_geom" type="capsule" size="0.0215 0.0080" pos="0 -0.01 0" euler="0 0 0" rgba="0 1 0 0.0"/>
+
+                <body name="mcp_link" pos="0.00015675 0.029856 0">
+                    <inertial pos="-4.0155e-05 0.019564 0.004554" quat="0.51097 0.473652 -0.492558 0.521488" mass="0.022212" diaginertia="3.60499e-06 2.80936e-06 2.37004e-06"/>
+                    <joint name="mcp_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57" actuatorfrcrange="-10 10" damping="0.5" stiffness="0"/>
+                    <geom type="mesh" material="mcp_mat" mesh="mcp_link" contype="0" conaffinity="0"/>
+                    <geom name="mcp_geom" type="capsule" size="0.0215 0.0080" pos="0 0.010 0.005" euler="90 0 0" rgba="0 1 0 0.0"/>
+                
+                    <body name="pip_link" pos="0.00022576 0.042999 0">
+                        <inertial pos="9.3176e-05 0.02496 5.2699e-05" quat="0.627101 0.32874 -0.334425 0.62196" mass="0.026546" diaginertia="5.11105e-06 4.55235e-06 3.1275e-06"/>
+                        <joint name="pip_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57" actuatorfrcrange="-10 10" damping="0.5" stiffness="0"/>
+                        <geom type="mesh" material="pip_mat" mesh="pip_link" contype="0" conaffinity="0"/>  
+                        <!-- <geom name="pip_geom" type="capsule" size="0.0215 0.010" pos="0 0.020 0" euler="90 0 0" rgba="0 1 0 0.1"/> -->
+                        <geom name="pip_geom" type="capsule" size="0.0215 0.010"
+                                pos="0 0.020 0" euler="90 0 0"
+                                solref="0.005 1.2"
+                                solimp="0.9 0.95 0.001"
+                                friction="0.2 0.005 0.0001"
+                                rgba="0 1 0 0.1"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+    
+
+        <body name="pendulum_support" pos="0 0.014 0.25">
+                <!-- Support box (non-colliding) -->
+                <geom type="box"
+                    size="0.04 0.04 0.04"
+                    rgba="0.5 0.5 0.5 1"/>
+
+                <!-- Move hinge BELOW the support box -->
+                <body name="pendulum_rod" pos="0.040 0 0">
+                    <joint type="hinge"
+                        axis="0 1 0"
+                        pos="0 0 0"
+                        damping="0.00025"/>
+
+                    <!-- 10 cm rod (half-length = 0.1) -->
+                    <geom type="cylinder" pos="0 0 -0.1" size="0.0025 0.1"  density="100"  rgba=".9 .9 0 1"/>
+
+                    <!-- Ball at end of rod -->
+                    <body pos="0 0 -0.20">
+                        <!-- <geom name="ball_geom" type="sphere" size="0.015" density="10000" rgba="0.2 0.2 1 1"/> -->
+                        <geom name="ball_geom" type="sphere" size="0.015"
+                                density="200"
+                                fluidshape="ellipsoid"
+                                friction="0.2 0.005 0.0001"
+                                solref="0.005 1.2"
+                                solimp="0.9 0.95 0.001"
+                                rgba="0.2 0.2 1 1"/>
+                    </body> 
+
+                </body>
+        </body>
+            
+        
     </worldbody>
+    
+    <keyframe>
+        <key name="start" qpos="0 0 0 -1.4"/>
+    </keyframe>
+
+    <actuator>
+        <position name="splay_motor" joint="splay_joint" ctrlrange="-0.35 0.35" kp="10" kv="1.25"/>
+        <position name="mcp_motor"   joint="mcp_joint"   ctrlrange="0 1.57" ctrllimited="true" kp="10" kv="1"/> 
+        <position name="pip_motor"   joint="pip_joint"   ctrlrange="0 1.57" ctrllimited="true" kp="10" kv="1"/>
+    </actuator>
 
 </mujoco>

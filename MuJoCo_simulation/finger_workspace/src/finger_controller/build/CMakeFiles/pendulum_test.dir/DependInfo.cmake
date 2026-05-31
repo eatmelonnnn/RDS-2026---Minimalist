@@ -8,8 +8,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/finger_controller.cpp" "CMakeFiles/finger_controller.dir/finger_controller.cpp.o" "gcc" "CMakeFiles/finger_controller.dir/finger_controller.cpp.o.d"
-  "/Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/kinematics.cpp" "CMakeFiles/finger_controller.dir/kinematics.cpp.o" "gcc" "CMakeFiles/finger_controller.dir/kinematics.cpp.o.d"
+  "/Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/kinematics.cpp" "CMakeFiles/pendulum_test.dir/kinematics.cpp.o" "gcc" "CMakeFiles/pendulum_test.dir/kinematics.cpp.o.d"
+  "/Users/theyiranhuang/Desktop/MuJoCo_simulation/finger_workspace/src/finger_controller/pendulum_test.cpp" "CMakeFiles/pendulum_test.dir/pendulum_test.cpp.o" "gcc" "CMakeFiles/pendulum_test.dir/pendulum_test.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
