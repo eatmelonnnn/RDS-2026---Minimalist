@@ -138,9 +138,7 @@ void step_position_state() {
     }                  
 }
 
-void lissajou_position_state() {
-  static uint32_t lastCmd = 0;
-    if (millis() - lastCmd >= 10) {  
+void lissajou_position_state() { 
         angles target_joint = generate_lissajous();
         bool motor_on[3] = {true, true, true};
         // Send to motors
@@ -148,12 +146,10 @@ void lissajou_position_state() {
                         target_joint,
                         calibration_hardstops_motors,
                         25.0f, 3.0f, motor_on);
-    }
+    delay(10);
 }
 
 void ellipse_position_state() {
-  static uint32_t lastCmd = 0;
-    if (millis() - lastCmd >= 10) {  
         angles target_joint = generate_ellipse(0.5f);
         bool motor_on[3] = {true, true, true};
         // Send to motors
@@ -161,23 +157,19 @@ void ellipse_position_state() {
                         target_joint,
                         calibration_hardstops_motors,
                         25.0f, 3.0f, motor_on);
-    }
+        delay(10);
 }
 
 void step_force_state() {
   
-  // step_force_command(&m1,&m2,&m3, 25.0, 3.0, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 1);
+  step_force_command(&m1,&m2,&m3, 25.0, 3.3, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 1);
                                
-  //   set_torque(&motor2, torque_val);
-  //   CAN_message_t  rxMsg;
-  // if (can_3.read(rxMsg) && rxMsg.id == MOTOR2_ID) {
-  //                 unpack_reply(&rxMsg, MOTOR2_ID);
-  //                 Serial.println(torque);}
 
-  // Serial.print("MCP: ");
-  // Serial.println(get_mcp_tension());
-  // Serial.print("DIP: ");
-  // Serial.println(get_dip_tension());
+  Serial.print("MCP: ");
+  Serial.println(get_mcp_tension());
+  Serial.print("DIP: ");
+  Serial.println(get_dip_tension());
+  delay(10);
 }
 
 void zero_force_state() {
@@ -188,7 +180,7 @@ void zero_force_state() {
 }
 
 void max_force_state() {
-  float period = 25.0f; // num seconds to get to 20N
+  float period = 45.0f; // num seconds to get to 20N
   float cur_torque = 0;
   uint32_t cur_time = millis();
   if ((cur_time -  initial_max_force_time)  >  (1000.0f*period)) {
@@ -197,9 +189,11 @@ void max_force_state() {
   else {
     cur_torque = MAX_FINGERTIP_FORCE*(cur_time -  initial_max_force_time)/(1000.0f*period);
   }
+  Serial.println(cur_torque);
+  delay(10);
 
   // Serial.println("force control");
-  // set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
 }
 
 void exit(uint32_t prev_state, uint32_t new_state) {

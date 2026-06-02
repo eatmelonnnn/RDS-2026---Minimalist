@@ -3,10 +3,10 @@
 
 #include <math.h>
 
-#define LENGTH_A 0.035//0.0354
+#define LENGTH_A 0.035//0.0354//
 #define LENGTH_B 0.043
 #define LENGTH_C 0.0298
-#define LENGTH_D 0.01//0.02
+#define LENGTH_D 0.01//0.02//
 
 
 #define Rm1 0.005f

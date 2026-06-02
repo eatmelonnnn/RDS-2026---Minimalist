@@ -237,7 +237,8 @@ void set_fingertip_force_zero(motor_axis * motor1,
      &i_error_mcp,
       mcp_control,
        &initial_loop_mcp) + tendon_m_torques[MCP];
-  // Serial.println(torque_mcp);
+  Serial.print("setting torque to  motor2 as; ");
+  Serial.println(torque_mcp);
  set_torque(motor2, torque_mcp);
 // set_torque(motor2, 0.0);
 // CAN_message_t  rxMsg;
@@ -282,8 +283,8 @@ void set_torque(motor_axis *axis, float torque) {
     // set_current(axis,current);
     
     // Clamp inputs to valid ranges
-    float actual_torque_pre_gearing = constrain(torque, T_MIN, T_MAX);
-    float actual_torque = actual_torque_pre_gearing/GEAR_RATIO;
+    float actual_torque = constrain(torque, T_MIN, T_MAX);
+    // float actual_torque = actual_torque_pre_gearing/GEAR_RATIO;
 
     // Convert to 16/12-bit unsigned ints
     uint16_t pos_int = float_to_uint(0, P_MIN, P_MAX, 16);
