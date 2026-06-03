@@ -1,5 +1,6 @@
 #include "trajectories.h"
 
+
 float ellipse_1d(float c, float u, float v, uint32_t t, uint32_t period_ms) {
   double phase = double(t)*2*PI/double(period_ms);
   return float(c + u*cos(phase) + v*sin(phase));

@@ -48,6 +48,11 @@ float norm(float a, float b) {
 
 }
 
+float get_splay_torque(float mcp_tension,  float dip_tension) {
+  return rw*(dip_tension - mcp_tension);
+};
+
+
 angles cartesian_pos_to_joint_pos(cartesian_pos xyz) {
   float r = norm(xyz.x, xyz.y);
   float r_prime = r - LENGTH_C;

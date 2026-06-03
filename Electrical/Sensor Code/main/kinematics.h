@@ -50,7 +50,7 @@ angles cartesian_pos_to_joint_pos(cartesian_pos xyz);
 tendonLengths multiply_AT(float th1, float th2, float th3);
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
 angles motor_pos_to_joint_pos(float pos1, float pos2, float pos3, float calibration_offsets[3]);
-
+float get_splay_torque(float mcp_tension,  float dip_tension);
 
 
 #endif
