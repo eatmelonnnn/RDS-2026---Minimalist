@@ -20,6 +20,7 @@ void zero_tip_force_to_joint_torques(float tip_force, float torques[3]) {
   }
 }
 
+
 void joint_torques_to_tendon_tensions(float joint_torques[3], float tendon_tensions[2]) {
   tendon_tensions[MCP] = (joint_torques[1] + joint_torques[2])/rj;
   tendon_tensions[DIP] = joint_torques[2]/rj;
@@ -48,7 +49,22 @@ float norm(float a, float b) {
 
 }
 
-float get_splay_torque(float mcp_tension,  float dip_tension) {
+
+float ff_torque_flexion_from_angle(float angle_val) {
+  float length;
+  if (angle_val > SPRING_ANGLE_GEO_THRESH) {
+    length = sqrt(sq(SPRING_LENGTH_A) + sq(SPRING_LENGTH_C) -2*SPRING_LENGTH_A*SPRING_LENGTH_C*cos(angle_val + SPRING_GAMMA));
+  }
+  else{
+    length = sqrt(sq(SPRING_LENGTH_A) + sq(SPRING_LENGTH_B) -2*SPRING_LENGTH_A*SPRING_LENGTH_B*cos(0.5*(angle_val + SPRING_GAMMA)))+
+    sqrt(sq(SPRING_LENGTH_C) + sq(SPRING_LENGTH_B) -2*SPRING_LENGTH_C*SPRING_LENGTH_B*cos(0.5*(angle_val + SPRING_GAMMA)));
+  }
+  return length*SPRING_STIFF*SPRING_MOMENT_ARM;
+}
+
+float get_splay_torque(float torque_2,  float torque_3) {
+  float mcp_tension = abs(torque_2/Rm2);
+  float dip_tension = abs(torque_3/Rm3);
   return rw*(dip_tension - mcp_tension);
 };
 

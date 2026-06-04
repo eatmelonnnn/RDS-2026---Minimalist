@@ -3,10 +3,17 @@
 
 #include <math.h>
 
-#define LENGTH_A 0.035//0.0354//
+#define LENGTH_A 0.0354//0.035//
 #define LENGTH_B 0.043
 #define LENGTH_C 0.0298
-#define LENGTH_D 0.01//0.02//
+#define LENGTH_D 0.02//0.01//
+#define SPRING_ANGLE_GEO_THRESH 0.698
+#define SPRING_GAMMA 1.021
+#define SPRING_MOMENT_ARM 0.0125
+#define SPRING_STIFF 311.37 // N/m
+#define SPRING_LENGTH_A 0.0148
+#define SPRING_LENGTH_B 0.0106
+#define SPRING_LENGTH_C 0.0161
 
 
 #define Rm1 0.005f
@@ -50,7 +57,7 @@ angles cartesian_pos_to_joint_pos(cartesian_pos xyz);
 tendonLengths multiply_AT(float th1, float th2, float th3);
 angles joint_pos_to_motor_pos(angles jointpos, float calibration_offsets[3]);
 angles motor_pos_to_joint_pos(float pos1, float pos2, float pos3, float calibration_offsets[3]);
-float get_splay_torque(float mcp_tension,  float dip_tension);
-
+float get_splay_torque(float torque_2,  float torque_3);
+float ff_torque_flexion_from_angle(float angle_val);
 
 #endif

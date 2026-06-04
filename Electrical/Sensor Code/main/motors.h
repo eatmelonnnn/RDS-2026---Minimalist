@@ -13,6 +13,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 #define MOTOR1_ID 3 // struggling to move
 #define MOTOR2_ID 4
 #define MOTOR3_ID 5
+#define MOTOR3_LOWER 4.0f
 
 #define KT 0.127f
 #define GEAR_RATIO 10.0f
@@ -132,4 +133,7 @@ angles generate_step_response(angles a, angles b, float freq);
 void set_joint_position_w_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *m3,
                         angles joint_pos, float calibration_offsets[3],
                         float kp, float kd, bool setting_motor[3], float torques[3]);
+void set_joint_position_w_automatic_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *m3,
+                        angles joint_pos, float calibration_offsets[3],
+                        float kp, float kd,bool setting_motor[3]);
 #endif

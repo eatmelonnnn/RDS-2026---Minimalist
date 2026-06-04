@@ -11,5 +11,6 @@ angles generate_step_position_benchmark(float freq);
 angles generate_ellipse(float freq);
 angles generate_lissajous();
 float  generate_fingertip_force_step(float a, float b, float freq);
+angles generate_flex_ext_sinusoid();
 
 #endif

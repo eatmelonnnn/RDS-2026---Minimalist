@@ -35,11 +35,11 @@
 #include <SPI.h>
 
 // ---------- Pin config ----------
-constexpr uint8_t PIN_CS   = 38;
+constexpr uint8_t PIN_CS   = 10;
 constexpr uint8_t PIN_MOSI = 26;
 constexpr uint8_t PIN_MISO = 39;
 constexpr uint8_t PIN_SCK  = 27;
-constexpr uint8_t PIN_DRDY = 29;   // ADS1220 /DRDY -> Teensy pin 29
+constexpr uint8_t PIN_DRDY = 9;   // ADS1220 /DRDY -> Teensy pin 29
 
 SPISettings adsSPI(100'000, MSBFIRST, SPI_MODE1);
 

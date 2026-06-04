@@ -154,6 +154,10 @@ void set_position(motor_axis *axis, float pos_rad, float kp, float kd) {
     kp      = constrain(kp, 0.0f, 500.0f);
     kd      = constrain(kd, 0.0f, 5.0f);
 
+    if (axis->controller_id == MOTOR3_ID) {
+        kp = kp/MOTOR3_LOWER;
+        kd = kd/MOTOR3_LOWER;
+    }
     // Convert to 16/12-bit unsigned ints
     uint16_t pos_int = float_to_uint(pos_rad, P_MIN, P_MAX, 16);
     uint16_t vel_int = float_to_uint(0.0f,    V_MIN, V_MAX, 12);  // zero velocity
@@ -182,6 +186,10 @@ void set_position_w_ff_torque(motor_axis *axis, float pos_rad, float kp, float k
     kd      = constrain(kd, 0.0f, 5.0f);
     torque =  constrain(torque,  T_MIN, T_MAX);
 
+    if (axis->controller_id == MOTOR3_ID) {
+        kp = kp/MOTOR3_LOWER;
+        kd = kd/MOTOR3_LOWER;
+    }
     // Convert to 16/12-bit unsigned ints
     uint16_t pos_int = float_to_uint(pos_rad, P_MIN, P_MAX, 16);
     uint16_t vel_int = float_to_uint(0.0f,    V_MIN, V_MAX, 12);  // zero velocity
@@ -203,8 +211,8 @@ void set_position_w_ff_torque(motor_axis *axis, float pos_rad, float kp, float k
     comm_can_transmit_sid(axis->controller_id, bytes, 8, 0);
 }
 
-void hold_splay_position_zero(float mcp_tension, float dip_tension, motor_axis* motor1, motor_axis* motor2,  motor_axis* motor3,  float calibration_hardstops[3]) {
-    float ff_torque = get_splay_torque(mcp_tension, dip_tension);
+void hold_splay_position_zero(float mcp_torque, float dip_torque, motor_axis* motor1, motor_axis* motor2,  motor_axis* motor3,  float calibration_hardstops[3]) {
+    float ff_torque = get_splay_torque(mcp_torque, dip_torque);
     angles target_joint = {0, 0, 0};
     bool motor_on[3] = {true, false, false};
     float splay_torque_only[3] = {ff_torque, false, false};
@@ -294,7 +302,7 @@ void set_fingertip_force_zero(motor_axis * motor1,
        &initial_loop_dip) + tendon_m_torques[DIP];
     set_torque(motor3, torque_dip);
 //   set_torque(motor3, 0.0);
-  hold_splay_position_zero(get_mcp_tension(), get_dip_tension(), motor1,motor2,  motor3,  calibration_hardstops);
+  hold_splay_position_zero(torque_mcp, torque_dip, motor1,motor2,  motor3,  calibration_hardstops);
 }
 
 void buffer_append_int32(uint8_t* buffer, int32_t number, int32_t *index) {
@@ -390,11 +398,36 @@ void set_joint_position_w_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *
     }
 }
 
+void set_joint_position_w_automatic_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *m3,
+                        angles joint_pos, float calibration_offsets[3],
+                        float kp, float kd,bool setting_motor[3]) {
+angles motor_pos = joint_pos_to_motor_pos(joint_pos, calibration_offsets);
+float torque_splay= 0;
+float torque_mcp = 0;
+float torque_dip = 0;
+   
+     if (setting_motor[1]) {
+        torque_mcp = -ff_torque_flexion_from_angle(motor_pos.th2);
+        set_position_w_ff_torque(m2, motor_pos.th2, kp, kd, torque_mcp);
+    }
+    if (setting_motor[2]) {
+        torque_dip = ff_torque_flexion_from_angle(motor_pos.th3);
+        set_position_w_ff_torque(m3, motor_pos.th3, kp, kd, torque_dip);
+    }
+     if (setting_motor[0]) {
+        torque_splay = get_splay_torque(torque_mcp, torque_dip);
+        set_position_w_ff_torque(m1, motor_pos.th1, kp, kd, torque_splay);
+    }                            
+                        }
 
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd) {
     // Clamp inputs
     vel_rad_s = constrain(vel_rad_s, V_MIN, V_MAX);
     kd        = constrain(kd, 0.0f, 5.0f);
+
+    if (axis->controller_id == MOTOR3_ID) {
+        kd = kd/MOTOR3_LOWER;
+    }
 
     // Convert to packed integers
     uint16_t pos_int = float_to_uint(0.0f, P_MIN, P_MAX, 16);   // no position control
@@ -489,8 +522,8 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
         set_velocity(axis, velocity, 2.0f);
         delay(1000);
         bool done = false;
-        uint32_t start_time = millis();
-        uint32_t timeout_ms = 30000;
+        // uint32_t start_time = millis();
+        // uint32_t timeout_ms = 30000;
 
 
         while (!done) {
@@ -498,13 +531,13 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
             // curr_pos = curr_pos + 0.02;
             set_velocity(axis, velocity, 2.0f);
             // timeout
-            if (millis() - start_time > timeout_ms) {
-                if (!LOGGING) {Serial.println("TIMEOUT");}
-                set_velocity(axis, 0.0f, 2.0f);
-                calibration_sum = NAN;
-                done = true;
-                break;
-            }
+            // if (millis() - start_time > timeout_ms) {
+            //     if (!LOGGING) {Serial.println("TIMEOUT");}
+            //     set_velocity(axis, 0.0f, 2.0f);
+            //     calibration_sum = NAN;
+            //     done = true;
+            //     break;
+            // }
             
             if (can_3.read(rxMsg) && rxMsg.id == motor_id) {
                 unpack_reply(&rxMsg, motor_id);
@@ -562,7 +595,7 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
     }
     
   if (!LOGGING) {Serial.println("Calibrating MCP");}
-  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.7f);
+  float motor_pos_2 = raw_calibrate_motor(motor2, CALIBRATION_VELOCITY, MOTOR2_ID, 1.6f);
   calibration_offsets[1] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_2, motor_pos_2, rj, Rm2);
   motor_on[1] = true;
    start = millis();
@@ -573,7 +606,7 @@ void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_ax
         delay(5);  // ~200 Hz
     }
     if (!LOGGING) {Serial.println("Calibrating DIP");}
-  float motor_pos_3 = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID, 1.5f);
+  float motor_pos_3 = raw_calibrate_motor(motor3, -CALIBRATION_VELOCITY, MOTOR3_ID, 1.3f);
   calibration_offsets[2] = calibration_hardstops_zero_motors(HARDSTOP_JOINT_3, motor_pos_3, rj, Rm3);
   motor_on[2] = true;
   start = millis();
@@ -593,5 +626,7 @@ float generate_sine_wave(motor_axis *axis, float amplitude, float angular_freque
 
   return target_position;
 }
+
+
 
 
