@@ -89,6 +89,17 @@ void unpack_reply(CAN_message_t *RxMessage, int id_desired){
   }
 }
 
+
+float get_torque(CAN_message_t *RxMessage){
+  /// unpack ints from can buffer ///
+  
+    id = RxMessage->buf[0]; //driver id number
+    i_int = (( RxMessage->buf[4]&0xF)<<8)| RxMessage->buf[5]; //motor torque value
+    float torque = uint_to_float(i_int, -T_MAX, T_MAX, 12);
+    return torque;
+}
+
+
 float position;
 float speed ;
 float torque ;
@@ -248,7 +259,8 @@ void step_force_command(motor_axis * motor1,
                                 float freq) {
     
     float cur_force = generate_fingertip_force_step(min_force, max_force, freq);
-    set_fingertip_force_zero(motor1,
+    if (CURRENT_CONTROL_FOR_FORCE) {
+        set_fingertip_force_zero_w_current_control(motor1,
                             motor2,
                             motor3,
                             cur_force, 
@@ -257,8 +269,66 @@ void step_force_command(motor_axis * motor1,
                             mcp_control,
                             dip_control,
                             calibration_hardstops);
-}
+    }
+    else {
+        set_fingertip_force_zero(motor1,
+                            motor2,
+                            motor3,
+                            cur_force, 
+                            splay_p, 
+                            splay_d, 
+                            mcp_control,
+                            dip_control,
+                            calibration_hardstops);
+    }
     
+}
+
+void set_fingertip_force_zero_w_current_control(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float tip_force, 
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3])   {
+    float tendon_m_torques[2];
+    float tendon_tensions[2];
+    // find torques andtensions
+    tip_zero_force_to_outputs(tip_force, tendon_tensions,tendon_m_torques);
+    CAN_message_t  rxMsg;
+    float torque_mcp = 0.0;
+    float torque_dip = 0.0;
+    if (can_3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
+        float torque_mcp_actual = get_torque(&rxMsg);
+        torque_mcp = pid_correction(torque_mcp_actual,
+            tendon_m_torques[MCP],
+            &prev_error_mcp,
+            &i_error_mcp,
+            mcp_control,
+            &initial_loop_mcp) + tendon_m_torques[MCP];
+
+    }
+    set_torque(motor2, torque_mcp);
+    if (can_3.read(rxMsg) && rxMsg.id == motor3 ->controller_id) {
+        float torque_dip_actual = get_torque(&rxMsg);
+        torque_dip = -pid_correction(torque_dip_actual,
+            tendon_m_torques[DIP],
+            &prev_error_dip,
+            &i_error_dip,
+            dip_control,
+            &initial_loop_dip) + tendon_m_torques[DIP];
+    }
+        
+    set_torque(motor3, torque_dip);
+//   Serial.print("setting torque to  motor2 as; ");
+//   Serial.println(torque_mcp);
+
+
+  hold_splay_position_zero(torque_mcp, torque_dip, motor1,motor2,  motor3,  calibration_hardstops);
+}
+ 
             
 void set_fingertip_force_zero(motor_axis * motor1,
                                 motor_axis * motor2,
@@ -286,14 +356,21 @@ void set_fingertip_force_zero(motor_axis * motor1,
      &i_error_mcp,
       mcp_control,
        &initial_loop_mcp) + tendon_m_torques[MCP];
-  Serial.print("setting torque to  motor2 as; ");
-  Serial.println(torque_mcp);
+//   Serial.print("setting torque to  motor2 as; ");
+//   Serial.println(torque_mcp);
+    // Serial.print(get_mcp_tension());
+    // Serial.print(", ");
+    // Serial.println(get_dip_tension());
  set_torque(motor2, torque_mcp);
 // set_torque(motor2, 0.0);
-// CAN_message_t  rxMsg;
-// if (can_3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
-//                 unpack_reply(&rxMsg, motor2 ->controller_id);
-//                 Serial.println(torque);}
+CAN_message_t  rxMsg;
+Serial.print(tendon_m_torques[MCP]);
+Serial.print(", ");
+Serial.print(tendon_m_torques[DIP]);
+
+if (can_3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
+               unpack_reply(&rxMsg, motor2 ->controller_id);
+                Serial.print(torque);}
   float torque_dip = pid_correction(get_dip_tension(),
    tendon_tensions[DIP],
     &prev_error_dip,
@@ -301,6 +378,10 @@ void set_fingertip_force_zero(motor_axis * motor1,
       dip_control,
        &initial_loop_dip) + tendon_m_torques[DIP];
     set_torque(motor3, torque_dip);
+    if (can_3.read(rxMsg) && rxMsg.id == motor3 ->controller_id) {
+               unpack_reply(&rxMsg, motor3 ->controller_id);
+                Serial.print(", ");
+                Serial.println(torque);}
 //   set_torque(motor3, 0.0);
   hold_splay_position_zero(torque_mcp, torque_dip, motor1,motor2,  motor3,  calibration_hardstops);
 }
@@ -545,7 +626,7 @@ float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, f
                 float current = torque;
                 static uint32_t lastprint = millis();
                 if ((millis() - lastprint) > 200) {
-                    Serial.println(current);
+                    // Serial.println(current);
                     lastprint= millis();
                 }
                 
