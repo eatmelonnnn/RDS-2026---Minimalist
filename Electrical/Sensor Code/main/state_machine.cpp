@@ -1,14 +1,18 @@
 #include "state_machine.h"
 
-float calibration_hardstops_motors[3] = {0, 0, 0};
+
+float calibration_hardstops_motors[3] = {0.65, -0.29, 3.54};
 bool first_time = true;
 
 volatile CONTROL_MODES cur_system_state = CALIBRATION;
 CONTROL_MODES prev_system_state = STARTUP;
 
-k dip_control_force = {0.005, 0, 0};
+k dip_control_force = {0.022, 0, 0};
+k dip_control_force_current = {0.006, 0, 0};
 
-k mcp_control_force = {0.005, 0, 0};
+
+k mcp_control_force = {0.022, 0, 0};
+k mcp_control_force_current = {0.006, 0, 0};
 
 uint32_t initial_max_force_time = 0;
 uint32_t lastCmd = 0;
@@ -20,12 +24,15 @@ motor_axis m1;
 motor_axis m2;
 motor_axis m3;
 
+bool is_force(CONTROL_MODES cur_state) {
+ return (cur_state == STEP_FORCE || cur_state == MAX_FORCE);
+};
 
 void switch_calibration() {
   cur_system_state = CALIBRATION;
 }
 void switch_step_position() {
-  Serial.println("step_pos");
+  // Serial.println("step_pos");
   cur_system_state = STEP_POSITION;
 }
 void switch_lissajou_position() {
@@ -42,6 +49,10 @@ void switch_step_force() {
 }
 void switch_max_force() {
   cur_system_state = MAX_FORCE;
+}
+
+void switch_flex_ext() {
+  cur_system_state = FLEX_EXT;
 }
 
 
@@ -82,6 +93,7 @@ void initial_universal_setup() {
   pinMode(PIN_ZERO_FORCE, INPUT);
   pinMode(PIN_STEP_FORCE, INPUT);
   pinMode(PIN_MAX_FORCE, INPUT);
+  pinMode(PIN_FLEX_EXT, INPUT);
 
 }
 
@@ -125,27 +137,61 @@ void force_setup() {
   attachInterrupt(digitalPinToInterrupt(PIN_DRDY_MCP), isr_mcp, FALLING);
 }
 
+void flex_ext_setup() {
+  detachInterrupt(digitalPinToInterrupt(PIN_CALIBRATION));
+  detachInterrupt(digitalPinToInterrupt(PIN_STEP_POSITION));
+  detachInterrupt(digitalPinToInterrupt(PIN_LISSAJOU_POSITION));
+  detachInterrupt(digitalPinToInterrupt(PIN_ELLIPSE_POSITION));
+  detachInterrupt(digitalPinToInterrupt(PIN_ZERO_FORCE));
+  detachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE));
+  detachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE));
+  detachInterrupt(digitalPinToInterrupt(PIN_FLEX_EXT));
+}
+
+void flex_ext_state() {
+  angles target_joint = generate_flex_ext_sinusoid();
+        bool motor_on[3] = {true, true, true};
+        // Send to motors
+        set_joint_position_w_automatic_ff_torque(&m1,&m2,&m3,
+                        target_joint,
+                        calibration_hardstops_motors,
+                        25.0f, 3.0f, motor_on);
+        // set_joint_position(&m1,&m2,&m3,
+        //                 target_joint,
+        //                 calibration_hardstops_motors,
+        //                 25.0f, 3.0f, motor_on);
+    delay(10);
+}
+
 void step_position_state() {
-    if (millis() - lastCmd >= 10) { 
+    
     lastCmd = millis();
-    angles target_joint = generate_step_position_benchmark(1);
+    angles target_joint = generate_step_position_benchmark(0.5);
     bool motor_on[3] = {true, true, true};
     // Send to motors
-    set_joint_position(&m1, &m2, &m3,
-                    target_joint,
-                    calibration_hardstops_motors,
-                    25.0f, 3.0f, motor_on);
-    }                  
+    set_joint_position_w_automatic_ff_torque(&m1,&m2,&m3,
+                        target_joint,
+                        calibration_hardstops_motors,
+                        25.0f, 3.0f, motor_on);
+    // set_joint_position(&m1, &m2, &m3,
+    //                 target_joint,
+    //                 calibration_hardstops_motors,
+    //                 25.0f, 3.0f, motor_on);     
+    delay(10);           
 }
 
 void lissajou_position_state() { 
         angles target_joint = generate_lissajous();
         bool motor_on[3] = {true, true, true};
         // Send to motors
-        set_joint_position(&m1,&m2,&m3,
+        set_joint_position_w_automatic_ff_torque(&m1,&m2,&m3,
                         target_joint,
                         calibration_hardstops_motors,
                         25.0f, 3.0f, motor_on);
+        // set_joint_position(&m1,&m2,&m3,
+        //                 target_joint,
+        //                 calibration_hardstops_motors,
+        //                 25.0f, 3.0f, motor_on);
     delay(10);
 }
 
@@ -161,21 +207,43 @@ void ellipse_position_state() {
 }
 
 void step_force_state() {
-  
-  step_force_command(&m1,&m2,&m3, 25.0, 3.3, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 1);
-                               
+  //  uint32_t start = millis();
+  //  while ((millis() - start) < 10000) {
+  //  set_fingertip_force_zero(&m1,&m2,&m3, 1, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  //  delay(10);
+  //  }
+  //  Serial.println("Change!!");
+  // start = millis();
+  //  while ((millis() - start) < 10000) {
+  //  set_fingertip_force_zero(&m1,&m2,&m3, 3, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  //  delay(10);
+  //  }
+  if (CURRENT_CONTROL_FOR_FORCE) {
+    step_force_command(&m1,&m2,&m3, 25.0, 3.3, mcp_control_force_current, dip_control_force_current,calibration_hardstops_motors, 1, 3, 0.5);
+  }
+  else {
+    step_force_command(&m1,&m2,&m3, 25.0, 3.3, mcp_control_force, dip_control_force,calibration_hardstops_motors, 1, 3, 0.5);
+  }   
+  delay(10);                         
 
-  Serial.print("MCP: ");
-  Serial.println(get_mcp_tension());
-  Serial.print("DIP: ");
-  Serial.println(get_dip_tension());
-  delay(10);
+  // Serial.print("MCP: ");
+  // Serial.println(get_mcp_tension());
+  // Serial.print("DIP: ");
+  // Serial.println(get_dip_tension());
 }
 
 void zero_force_state() {
     set_torque(&m1, 0);
     set_torque(&m2, 0);
     set_torque(&m3, 0);
+    update_sensor_readings(PIN_CS_MCP, zero_offset_mcp,  PIN_DRDY_MCP, &is_mcp);
+    // Serial.println("DIP Tension Sensor Reading");
+    update_sensor_readings(PIN_CS_DIP, zero_offset_dip,  PIN_DRDY_DIP, &is_dip);
+
+    Serial.print(get_mcp_tension());
+    Serial.print(", ");
+    Serial.println(get_dip_tension());
+    delay(10);
     // set_fingertip_force_zero(&m1, &m2, &m3, 0, 0, 0, mcp_control_force, dip_control_force, calibration_hardstops_motors);
 }
 
@@ -189,11 +257,16 @@ void max_force_state() {
   else {
     cur_torque = MAX_FINGERTIP_FORCE*(cur_time -  initial_max_force_time)/(1000.0f*period);
   }
-  Serial.println(cur_torque);
+  // Serial.println(cur_torque);
   delay(10);
 
   // Serial.println("force control");
-  set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  if (CURRENT_CONTROL_FOR_FORCE) {
+      set_fingertip_force_zero_w_current_control(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force_current,dip_control_force_current,calibration_hardstops_motors);
+  }
+  else {
+    set_fingertip_force_zero(&m1,&m2,&m3, cur_torque, 25.0, 3.0, mcp_control_force,dip_control_force,calibration_hardstops_motors);
+  }
 }
 
 void exit(uint32_t prev_state, uint32_t new_state) {
@@ -210,6 +283,10 @@ void exit(uint32_t prev_state, uint32_t new_state) {
     detachInterrupt(digitalPinToInterrupt(PIN_DRDY_DIP));
     detachInterrupt(digitalPinToInterrupt(PIN_DRDY_MCP));
   }
+}
+
+CONTROL_MODES get_state() {
+  return cur_system_state;
 }
 
 
@@ -229,11 +306,15 @@ void state_machine_cycle() {
       attachInterrupt(digitalPinToInterrupt(PIN_ZERO_FORCE), switch_zero_force, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_FLEX_EXT), switch_flex_ext, RISING);
     }
     if (cur_state == CALIBRATION) {
       calibration_setup();
     }
-    else if (cur_state < 4) {
+    else if (cur_state == FLEX_EXT) {
+      flex_ext_setup();
+    }
+    else if (!is_force(cur_state)) {
       position_setup();
     }
     else {
@@ -266,13 +347,17 @@ void state_machine_cycle() {
     break;
 
   case STEP_FORCE:
-    Serial.println("Step Force");
+    // Serial.println("Step Force");
     step_force_state();
     break;
 
   case MAX_FORCE:
-    Serial.println("Max Force");
+    // Serial.println("Max Force");
     max_force_state();
+    break;
+  case FLEX_EXT:
+    // Serial.println("Flex Ext");
+    flex_ext_state();
     break;
 
   default:

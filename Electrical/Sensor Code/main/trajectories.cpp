@@ -1,5 +1,6 @@
 #include "trajectories.h"
 
+
 float ellipse_1d(float c, float u, float v, uint32_t t, uint32_t period_ms) {
   double phase = double(t)*2*PI/double(period_ms);
   return float(c + u*cos(phase) + v*sin(phase));
@@ -55,7 +56,7 @@ angles generate_lissajous() {
     const float A = 0.015f;    // 1.5 cm
 
     const float YC = 0.030f;
-    const float ZC = 0.0625f;
+    const float ZC = 0.06f;
 
     cartesian_pos p;
 
@@ -79,6 +80,22 @@ angles generate_step_response(angles a, angles b, float freq) {
     } else {
         return b;
     }
+}
+
+angles generate_flex_ext_sinusoid() {
+  angles sin_ang;
+  const float freq = 0.8;
+  const float amp = PI/4*0.85;
+  uint32_t period_ms = (uint32_t)(1000.0f / freq);
+  float t = (millis() % period_ms)/1000.0f;
+  sin_ang.th1 = 0.0f;
+  sin_ang.th2 = PI/4 + amp*sin(t*freq*PI);
+  sin_ang.th3 = sin_ang.th2;
+  return sin_ang;
+  
+  
+
+
 }
 
 float generate_fingertip_force_step(float a, float b, float freq){

@@ -2,6 +2,7 @@
 #define STATE_MACHINE_H
 
 #include "motors.h"
+#include "tensionsensor.h"
 
 
 enum CONTROL_MODES {
@@ -12,7 +13,8 @@ enum CONTROL_MODES {
   ZERO_FORCE,
   STEP_FORCE,
   MAX_FORCE,
-  STARTUP = -1
+  STARTUP = -1,
+  FLEX_EXT = 100
 };
 
 #define PIN_CALIBRATION 2
@@ -22,9 +24,11 @@ enum CONTROL_MODES {
 #define PIN_ZERO_FORCE 6
 #define PIN_STEP_FORCE 7
 #define PIN_MAX_FORCE 8
+#define PIN_FLEX_EXT 33
 
 
 
 void initial_universal_setup();
 void state_machine_cycle();
+CONTROL_MODES get_state();
 #endif
