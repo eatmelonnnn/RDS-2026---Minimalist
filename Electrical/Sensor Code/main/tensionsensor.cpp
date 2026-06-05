@@ -141,9 +141,9 @@ int32_t averageRaw(uint16_t samples,uint8_t PIN_CS,uint8_t PIN_DRDY) {
 
 void zero_sensors() {
   zero_offset_mcp = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_MCP,  PIN_DRDY_MCP);
-  Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_mcp);
+  // Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_mcp);
   zero_offset_dip = averageRaw(NUM_ZERO_SAMPLES, PIN_CS_DIP, PIN_DRDY_DIP);
-  Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_dip);
+  // Serial.printf("Zero offset at startup: %.2f counts\n", zero_offset_dip);
 }
 
 // ---------- ADS1220 init ----------

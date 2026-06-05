@@ -313,7 +313,7 @@ void set_fingertip_force_zero_w_current_control(motor_axis * motor1,
     set_torque(motor2, torque_mcp);
     if (can_3.read(rxMsg) && rxMsg.id == motor3 ->controller_id) {
         float torque_dip_actual = get_torque(&rxMsg);
-        torque_dip = -pid_correction(torque_dip_actual,
+        torque_dip = pid_correction(torque_dip_actual,
             tendon_m_torques[DIP],
             &prev_error_dip,
             &i_error_dip,
@@ -321,7 +321,7 @@ void set_fingertip_force_zero_w_current_control(motor_axis * motor1,
             &initial_loop_dip) + tendon_m_torques[DIP];
     }
         
-    set_torque(motor3, torque_dip);
+    set_torque(motor3, -torque_dip);
 //   Serial.print("setting torque to  motor2 as; ");
 //   Serial.println(torque_mcp);
 
@@ -377,7 +377,7 @@ if (can_3.read(rxMsg) && rxMsg.id == motor2 ->controller_id) {
      &i_error_dip,
       dip_control,
        &initial_loop_dip) + tendon_m_torques[DIP];
-    set_torque(motor3, torque_dip);
+    set_torque(motor3, -torque_dip);
     if (can_3.read(rxMsg) && rxMsg.id == motor3 ->controller_id) {
                unpack_reply(&rxMsg, motor3 ->controller_id);
                 Serial.print(", ");

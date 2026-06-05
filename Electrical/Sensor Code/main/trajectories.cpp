@@ -90,7 +90,7 @@ angles generate_flex_ext_sinusoid() {
   float t = (millis() % period_ms)/1000.0f;
   sin_ang.th1 = 0.0f;
   sin_ang.th2 = PI/4 + amp*sin(t*freq*PI);
-  sin_ang.th3 = sin_ang.th2;
+  sin_ang.th3 = PI/4 + amp*sin(t*freq*PI);
   return sin_ang;
   
   

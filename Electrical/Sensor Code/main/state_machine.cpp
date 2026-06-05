@@ -1,18 +1,18 @@
 #include "state_machine.h"
 
 
-float calibration_hardstops_motors[3] = {0.65, -0.29, 3.54};
+float calibration_hardstops_motors[3] = {0, 0, 0};
 bool first_time = true;
 
 volatile CONTROL_MODES cur_system_state = CALIBRATION;
 CONTROL_MODES prev_system_state = STARTUP;
 
-k dip_control_force = {0.022, 0, 0};
+k dip_control_force = {0.009, 0, 0.001};
 k dip_control_force_current = {0.006, 0, 0};
 
 
-k mcp_control_force = {0.022, 0, 0};
-k mcp_control_force_current = {0.006, 0, 0};
+k mcp_control_force = {0.009, 0, 0.001};
+k mcp_control_force_current = {0.006, 0, 0.001};
 
 uint32_t initial_max_force_time = 0;
 uint32_t lastCmd = 0;
