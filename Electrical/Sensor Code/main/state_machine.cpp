@@ -304,8 +304,8 @@ void state_machine_cycle() {
       attachInterrupt(digitalPinToInterrupt(PIN_LISSAJOU_POSITION), switch_lissajou_position, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_ELLIPSE_POSITION), switch_ellipse_position, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_ZERO_FORCE), switch_zero_force, FALLING);
-      attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
-      attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
+      // attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
+      // attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_FLEX_EXT), switch_flex_ext, RISING);
     }
     if (cur_state == CALIBRATION) {
