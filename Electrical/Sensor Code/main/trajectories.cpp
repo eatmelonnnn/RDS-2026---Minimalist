@@ -84,13 +84,13 @@ angles generate_step_response(angles a, angles b, float freq) {
 
 angles generate_flex_ext_sinusoid() {
   angles sin_ang;
-  const float freq = 0.8;
+  const float freq = 0.4;
   const float amp = PI/4*0.85;
   uint32_t period_ms = (uint32_t)(1000.0f / freq);
   float t = (millis() % period_ms)/1000.0f;
   sin_ang.th1 = 0.0f;
-  sin_ang.th2 = PI/4 + amp*sin(t*freq*PI);
-  sin_ang.th3 = PI/4 + amp*sin(t*freq*PI);
+  sin_ang.th2 = PI/4 + amp*sin(2*t*freq*PI);
+  sin_ang.th3 = PI/4 + amp*sin(2*t*freq*PI);
   return sin_ang;
   
   

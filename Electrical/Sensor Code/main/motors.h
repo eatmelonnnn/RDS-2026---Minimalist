@@ -12,7 +12,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 
 #define CURRENT_CONTROL_FOR_FORCE false
 
-#define MOTOR1_ID 3 // struggling to move
+#define MOTOR1_ID 3 
 #define MOTOR2_ID 4
 #define MOTOR3_ID 5
 #define MOTOR3_LOWER 4.0f

@@ -3,6 +3,17 @@
 
 float calibration_hardstops_motors[3] = {0, 0, 0};
 bool first_time = true;
+uint8_t flex_ext_print_cycle = 0;
+float mcp_temp = 0;
+float dip_temp = 0;
+float splay_temp = 0;
+float mcp_v = 0;
+float dip_v = 0;
+float splay_v = 0;
+float mcp_i = 0;
+float dip_i = 0;
+float splay_i = 0;
+bool header_printed = false;
 
 volatile CONTROL_MODES cur_system_state = CALIBRATION;
 CONTROL_MODES prev_system_state = STARTUP;
@@ -80,12 +91,12 @@ void initial_universal_setup() {
   delay(100);
   cs_setup(PIN_CS_DIP,  PIN_DRDY_DIP);
   cs_setup(PIN_CS_MCP, PIN_DRDY_MCP);
-  Serial.println("CS pins set up");
+  if (!LOGGING) {Serial.println("CS pins set up");}
   spi_setup();
-  Serial.println("SPI setup");
+  if (!LOGGING) {Serial.println("SPI setup");}
   adsInit(PIN_CS_DIP);
   adsInit(PIN_CS_MCP);
-  Serial.println("ADS initialize");
+  if (!LOGGING) {Serial.println("ADS initialize");}
   pinMode(PIN_CALIBRATION, INPUT);
   pinMode(PIN_STEP_POSITION, INPUT);
   pinMode(PIN_LISSAJOU_POSITION, INPUT);
@@ -98,7 +109,7 @@ void initial_universal_setup() {
 }
 
 void calibration_setup() {
-  Serial.println("Under zero torque for 5 seconds. Move pulleys accordingly.");
+  if (!LOGGING) {Serial.println("Under zero torque for 5 seconds. Move pulleys accordingly.");}
   uint32_t start_zero_force = millis();
   while ((millis() - start_zero_force) < 5000) {
     set_torque(&m1, 0);
@@ -106,14 +117,14 @@ void calibration_setup() {
     set_torque(&m3, 0);
   }
   delay(1000);
-  Serial.println("Now calibrating");
+  if (!LOGGING) {Serial.println("Now calibrating");}
   // position calibration
   full_calibration(calibration_hardstops_motors, &m1, &m2, &m3);
-  Serial.print("Calibration offsets: ");
-  Serial.println();
+  if (!LOGGING) {Serial.print("Calibration offsets: ");
+  Serial.println();}
   for (int i = 0; i < 3; i++) {
-    Serial.print(calibration_hardstops_motors[i]);
-    Serial.println();
+    if (!LOGGING) {Serial.print(calibration_hardstops_motors[i]);
+    Serial.println();}
   }
   // tension sensor calibration
   uint32_t start_zero_time = millis();
@@ -152,15 +163,72 @@ void flex_ext_state() {
   angles target_joint = generate_flex_ext_sinusoid();
         bool motor_on[3] = {true, true, true};
         // Send to motors
-        set_joint_position_w_automatic_ff_torque(&m1,&m2,&m3,
-                        target_joint,
-                        calibration_hardstops_motors,
-                        25.0f, 3.0f, motor_on);
-        // set_joint_position(&m1,&m2,&m3,
+        // set_joint_position_w_automatic_ff_torque(&m1,&m2,&m3,
         //                 target_joint,
         //                 calibration_hardstops_motors,
         //                 25.0f, 3.0f, motor_on);
+        set_joint_position(&m1,&m2,&m3,
+                        target_joint,
+                        calibration_hardstops_motors,
+                        25.0f, 3.0f, motor_on);
     delay(10);
+     CAN_message_t rxMsg;
+     if (!header_printed) {
+    Serial.println("time_ms,splay_temp,splay_vel,splay_torque,mcp_temp,mcp_vel,mcp_torque,dip_temp,dip_vel,dip_torque");
+    header_printed = true;
+}
+  while (can_3.read(rxMsg)) {
+      // Serial.print("GOT RESPONSE -->  ");
+      int incoming_id = rxMsg.id;
+
+      if (incoming_id == MOTOR1_ID){
+        unpack_reply(&rxMsg, MOTOR1_ID); 
+        splay_temp = Temperature;
+        splay_v = speed;
+        splay_i = torque;
+        // print_data(rxMsg, MOTOR1_ID);
+      }
+      else if (incoming_id == MOTOR2_ID){
+        unpack_reply(&rxMsg, MOTOR2_ID); 
+        mcp_temp = Temperature;
+        mcp_v = speed;
+        mcp_i = torque;
+        // print_data(rxMsg, MOTOR2_ID);
+      }
+      else if (incoming_id == MOTOR3_ID){
+        unpack_reply(&rxMsg, MOTOR3_ID); 
+        dip_temp = Temperature;
+        dip_v = speed;
+        dip_i = torque;
+        // print_data(rxMsg, MOTOR3_ID);
+      }     
+  }
+      // Serial.println();
+    if (flex_ext_print_cycle >= 5) {
+      flex_ext_print_cycle = 0;
+      Serial.print(millis());
+        Serial.print(",");
+        Serial.print(splay_temp);
+        Serial.print(",");
+        Serial.print(splay_v);
+        Serial.print(",");
+        Serial.print(splay_i);
+        Serial.print(",");
+        Serial.print(mcp_temp);
+        Serial.print(",");
+        Serial.print(mcp_v);
+        Serial.print(",");
+        Serial.print(mcp_i);
+        Serial.print(",");
+        Serial.print(dip_temp);
+        Serial.print(",");
+        Serial.print(dip_v);
+        Serial.print(",");
+        Serial.println(dip_i);
+    }
+    else{
+      flex_ext_print_cycle = flex_ext_print_cycle+1;
+    }
 }
 
 void step_position_state() {
@@ -270,10 +338,10 @@ void max_force_state() {
 }
 
 void exit(uint32_t prev_state, uint32_t new_state) {
-  Serial.print("Leaving State ");
+  if (!LOGGING) {Serial.print("Leaving State ");
   Serial.println(prev_state);
   Serial.print("Entering State ");
-  Serial.println(new_state);
+  Serial.println(new_state);}
   uint32_t start = millis();
   while ((millis() - start) < 500) {
     set_home_joint_position(&m1,&m2,&m3, calibration_hardstops_motors);
@@ -304,8 +372,8 @@ void state_machine_cycle() {
       attachInterrupt(digitalPinToInterrupt(PIN_LISSAJOU_POSITION), switch_lissajou_position, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_ELLIPSE_POSITION), switch_ellipse_position, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_ZERO_FORCE), switch_zero_force, FALLING);
-      // attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
-      // attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_STEP_FORCE), switch_step_force, FALLING);
+      attachInterrupt(digitalPinToInterrupt(PIN_MAX_FORCE), switch_max_force, FALLING);
       attachInterrupt(digitalPinToInterrupt(PIN_FLEX_EXT), switch_flex_ext, RISING);
     }
     if (cur_state == CALIBRATION) {
