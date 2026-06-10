@@ -10,9 +10,12 @@
 
 extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 
-#define MOTOR1_ID 3 // struggling to move
+#define CURRENT_CONTROL_FOR_FORCE false
+
+#define MOTOR1_ID 3 
 #define MOTOR2_ID 4
 #define MOTOR3_ID 5
+#define MOTOR3_LOWER 4.0f
 
 #define KT 0.127f
 #define GEAR_RATIO 10.0f
@@ -25,7 +28,7 @@ extern FlexCAN_T4<CAN3, RX_SIZE_256, TX_SIZE_16> can_3;
 #define I_MAX  18.0f
 #define T_MIN -18.0f
 #define T_MAX  18.0f
-#define LOGGING false
+#define LOGGING true
 
 #define CAL_DELAY 1000
 #define MAX_FINGERTIP_FORCE 20.0f
@@ -102,9 +105,18 @@ void set_joint_position(motor_axis *m1, motor_axis *m2, motor_axis *m3,
 void set_velocity(motor_axis *axis, float vel_rad_s, float kd);
 float raw_calibrate_motor(motor_axis *axis, float velocity, uint32_t motor_id, float current_threshold);
 void full_calibration(float calibration_offsets[3], motor_axis *motor1, motor_axis *motor2, motor_axis *motor3);
-
+float get_torque(CAN_message_t *RxMessage);
 void set_torque(motor_axis *axis, float torque);
 void set_home_joint_position(motor_axis *motor1,motor_axis *motor2,motor_axis *motor3, float calibration_hardstops[3]);
+void set_fingertip_force_zero_w_current_control(motor_axis * motor1,
+                                motor_axis * motor2,
+                                motor_axis * motor3,
+                                float tip_force, 
+                                float splay_p, 
+                                float splay_d, 
+                                k mcp_control,
+                                k dip_control,
+                                float calibration_hardstops[3]);
 void set_fingertip_force_zero(motor_axis * motor1,
                                 motor_axis * motor2,
                                 motor_axis * motor3,
@@ -132,4 +144,7 @@ angles generate_step_response(angles a, angles b, float freq);
 void set_joint_position_w_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *m3,
                         angles joint_pos, float calibration_offsets[3],
                         float kp, float kd, bool setting_motor[3], float torques[3]);
+void set_joint_position_w_automatic_ff_torque(motor_axis *m1, motor_axis *m2, motor_axis *m3,
+                        angles joint_pos, float calibration_offsets[3],
+                        float kp, float kd,bool setting_motor[3]);
 #endif
