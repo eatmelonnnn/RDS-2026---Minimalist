@@ -17,9 +17,9 @@
 
 4. When finished, press the **E-stop** to turn off the motors.
 
-# Assembly Instructions
+## Assembly Instructions
 
-## 1. Finger Assembly
+### 1. Finger Assembly
 
 1. Put bearings into flexion pulleys (3x).
    > ![Step 1](images/finger1.png)
@@ -58,7 +58,7 @@
 
 ---
 
-## 2. Mounting Assembly
+##3 2. Mounting Assembly
 
 1. Assemble main 80-20 frame with plates and bolts.
    > ![Step 1](images/mounting1.png)
@@ -87,7 +87,7 @@
 
 ---
 
-## 3. Finger/Mounting Integration Assembly
+### 3. Finger/Mounting Integration Assembly
 
 1. Bolt finger onto plate and put splay belt on.
    > ![Step 1](images/all1.png)
