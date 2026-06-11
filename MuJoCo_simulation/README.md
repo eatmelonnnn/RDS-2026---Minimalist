@@ -17,8 +17,7 @@ rendering — not the Python bindings.
 |------|---------|
 | `pendulum_test.cpp` | Simulation loop, controller state machine, and GLFW/MuJoCo rendering. |
 | `test.xml` | MuJoCo MJCF model: the finger, the pendulum, actuators, and a start keyframe. |
-| `kinematics.h` | **Not included here.** Referenced by `pendulum_test.cpp` via `#include "kinematics.h"`. You must supply this header (or remove the include if unused). |
-| STL meshes | `base_link.STL`, `splay_link.STL`, `mcp_link.STL`, `pip_link.STL` — referenced by the model. **Not included here.** You must supply these. |
+| STL meshes | `base_link.STL`, `splay_link.STL`, `mcp_link.STL`, `pip_link.STL` can be accessed in the MuJoCo_simulation/finger_workspace/src/finger_description/meshes directory. |
 
 ---
 
@@ -132,7 +131,7 @@ directory **two levels below** the parent of `finger_description/`:
 
 ```
 project/
-├── finger_description/
+├── finger_workspace/
 │   ├── urdf/
 │   │   └── test.xml
 │   └── meshes/
@@ -140,9 +139,8 @@ project/
 │       ├── splay_link.STL
 │       ├── mcp_link.STL
 │       └── pip_link.STL
-└── build/
-    └── bin/
-        └── pendulum_test     # run from here → ../../finger_description/urdf/test.xml
+└── finger_controller/
+    └── pendulum_test     # run from here → ../../finger_description/urdf/test.xml
 ```
 
 If your layout differs, either move the files to match, or edit the path in the
@@ -258,6 +256,3 @@ orbit the camera; press **Esc** to quit.
 
 - MuJoCo docs: <https://mujoco.readthedocs.io/>
 - MuJoCo releases: <https://github.com/google-deepmind/mujoco/releases>
-- The controller is intentionally simple (open-loop curl on a timed trigger). It's a
-  good starting point for experimenting with contact-aware or feedback control of the
-  strike.
