@@ -1,6 +1,6 @@
 # Finger Flick — MuJoCo Simulation
 
-A small MuJoCo C++ simulation in which a 3-DOF robotic finger actively **flicks a
+A MuJoCo C++ simulation in which a 3-DOF tendon driven robotic finger actively **flicks a
 swinging pendulum**. A ball hangs from a hinged rod and swings back and forth; a
 controller watches the rod angle and velocity and, at the right moment, curls the
 finger to swat the ball as it approaches. The scene renders in an interactive 3D
