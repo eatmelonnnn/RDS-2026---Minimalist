@@ -1,25 +1,9 @@
 # Minimalist Finger
 
 
-## Instructions to Run Finger Program/Operate Finger Once Assembled
+## Assembly Instructions
 
-1. Locate main folder in the Electrical and upload `main.ino` to the Teensy 4.1.
-
-2. Let calibration sequence run without interference.
-
-3. Choose desired behavior/test.
-   - For all states except the flexion-extension test, simply press the specified button to trigger the state switch.
-   - You can switch between any two states by pressing the corresponding buttons.
-   - For the MCP flexion-extension test:
-     - Move the jumper wire on Pin 33 from **GND** to **3.3V**.
-     - This will trigger the flexion-extension test.
-     - At this point, there is no way to return to the other states without rerunning the program from the start on the Teensy.
-
-4. When finished, press the **E-stop** to turn off the motors.
-
-# Assembly Instructions
-
-## 1. Finger Assembly
+### 1. Finger Assembly
 
 1. Put bearings into flexion pulleys (3x).
    > ![Step 1](images/finger1.png)
@@ -58,7 +42,7 @@
 
 ---
 
-## 2. Mounting Assembly
+##3 2. Mounting Assembly
 
 1. Assemble main 80-20 frame with plates and bolts.
    > ![Step 1](images/mounting1.png)
@@ -87,7 +71,7 @@
 
 ---
 
-## 3. Finger/Mounting Integration Assembly
+### 3. Finger/Mounting Integration Assembly
 
 1. Bolt finger onto plate and put splay belt on.
    > ![Step 1](images/all1.png)
@@ -96,3 +80,21 @@
 3. Thread tendon from finger through tension sensor and onto pulley.
    > ![Step 3](images/all3.png)
 4. Terminate tendon on motor pulley with slipknot and screw.
+
+
+---
+## Instructions to Run Finger Program/Operate Finger Once Assembled
+
+1. Locate main folder in the Electrical and upload `main.ino` to the Teensy 4.1.
+
+2. Let calibration sequence run without interference.
+
+3. Choose desired behavior/test.
+   - For all states except the flexion-extension test, simply press the specified button to trigger the state switch.
+   - You can switch between any two states by pressing the corresponding buttons.
+   - For the MCP flexion-extension test:
+     - Move the jumper wire on Pin 33 from **GND** to **3.3V**.
+     - This will trigger the flexion-extension test.
+     - At this point, there is no way to return to the other states without rerunning the program from the start on the Teensy.
+
+4. When finished, press the **E-stop** to turn off the motors.
